@@ -1,44 +1,13 @@
 import pyglet
-import  numpy as np
-from jpheng.camera import FirstPersonCamera
-
-class Cube:
-    def __init__(self):
-        colors = (
-            56, 89, 105,
-            25, 79, 255,
-            69, 204, 18,
-            75, 154, 182,
-            56, 274, 153,
-            98, 50, 103,
-            56, 254, 103,
-            250, 89, 189)
-        vertices = np.array([
-            0, 0, 0,  # 0
-            1, 0, 0,  # 1
-            1, 1, 0,  # 2
-            0, 1, 0,  # 3
-            0, 1, 1,  # 4
-            0, 0, 1,  # 5
-            1, 0, 1,  # 6
-            1, 1, 1]) # 7
-        indices = [
-            0,1,6,5,  # front
-            1,2,7,6,  # right
-            2,3,4,7,  # back
-            3,0,5,4,  # left
-            0,1,2,3,  # bottom
-            4,5,6,7]  # top
-
-        self.vertex_list_indexed = pyglet.graphics.vertex_list_indexed(8,
-            indices, ('v3f', vertices), ('c3B', colors))
-
-
-    def draw(self):
-        self.vertex_list_indexed.draw(pyglet.gl.GL_QUADS)
+import numpy as np
+import jpheng.camera as cam
+import jpheng.shapes as shapes
 
 
 class JphengWindow(pyglet.window.Window):
+    """Custom subclass of pyglet.window, adds a first person camera to the
+    window.
+    """
     def __init__(self, *args, **kwargs):
         # call init of superclass (pyglet window)
         super(JphengWindow, self).__init__(*args, **kwargs)
@@ -46,16 +15,14 @@ class JphengWindow(pyglet.window.Window):
         pyglet.gl.glClearColor(255, 255, 255, 1)
         pyglet.gl.glEnable(pyglet.gl.GL_DEPTH_TEST)
         self.set_minimum_size(200, 200)
-        # # fps counter
-        # fps_font = pyglet.font.load('Arial', 12)
-        # self.fps_display = pyglet.clock.ClockDisplay(font=fps_font)
         # set camera
-        self.camera = FirstPersonCamera(self)
+        self.camera = cam.FirstPersonCamera(self)
         # give cube
-        self.cube = Cube()
-        # schedule update function to be called as often as possible
-        pyglet.clock.schedule(self.update)
-
+        self.cube = shapes.Cube(4)
+        # schedule camera updates
+        pyglet.clock.schedule_interval(self.camera.update, 1/120)
+        self.v = np.array([3, 0, 0])
+        pyglet.clock.schedule_interval(self.cube.step, 1/60, self.v)
 
     def set3D(self):
         pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
@@ -64,18 +31,12 @@ class JphengWindow(pyglet.window.Window):
         pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
         pyglet.gl.glLoadIdentity()
 
-
     def on_draw(self):
         self.clear()
         self.set3D()
         self.camera.draw()
         self.cube.draw()
         return pyglet.event.EVENT_HANDLED
-
-
-    def update(self, dt):
-        self.camera.update(dt)
-        # Your update code here
 
 
 if __name__ == '__main__':
