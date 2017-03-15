@@ -32,7 +32,6 @@ class Cube:
 
         self.vertex_list_indexed = pyglet.graphics.vertex_list_indexed(8,
             indices, ('v3f', vertices), ('c3B', colors))
-        x = 2
 
 
     def draw(self):
