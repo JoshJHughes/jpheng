@@ -17,12 +17,16 @@ class JphengWindow(pyglet.window.Window):
         self.set_minimum_size(200, 200)
         # set camera
         self.camera = cam.FirstPersonCamera(self)
-        # give cube
-        self.cube = shapes.Cube(4)
+        # creat particle
+        p = [0,0,-8]
+        v = [0,0,0]
+        a = [0,0,0]
+        inv_mass = 1/5
+        r = 4
+        self.particle = shapes.Particle(p,v,a,inv_mass,r)
         # schedule camera updates
         pyglet.clock.schedule_interval(self.camera.update, 1/120)
-        self.v = np.array([3, 0, 0])
-        pyglet.clock.schedule_interval(self.cube.step, 1/60, self.v)
+        pyglet.clock.schedule_interval(self.particle.update, 1/60)
 
     def set3D(self):
         pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
@@ -35,7 +39,7 @@ class JphengWindow(pyglet.window.Window):
         self.clear()
         self.set3D()
         self.camera.draw()
-        self.cube.draw()
+        self.particle.draw()
         return pyglet.event.EVENT_HANDLED
 
 
