@@ -43,7 +43,7 @@ class FirstPersonCamera(object):
             pyglet.app.run()
     """
 
-    DEFAULT_MOVEMENT_SPEED = 10.0
+    DEFAULT_MOVEMENT_SPEED = 75.0
 
     DEFAULT_ROTATION_SPEED = 10.0
 
@@ -109,30 +109,34 @@ class FirstPersonCamera(object):
     def move_forward(self, distance):
         """Move forward on distance"""
         self.__position[0] -= distance * math.sin(math.radians(self.__yaw))
-        self.__position[2] += distance * math.cos(math.radians(self.__yaw))
+        self.__position[1] -= distance * math.cos(math.radians(self.__yaw))
 
     def move_backward(self, distance):
         """Move backward on distance"""
         self.__position[0] += distance * math.sin(math.radians(self.__yaw))
-        self.__position[2] -= distance * math.cos(math.radians(self.__yaw))
+        self.__position[1] += distance * math.cos(math.radians(self.__yaw))
 
     def move_left(self, distance):
         """Move left on distance"""
-        self.__position[0] -= distance * math.sin(math.radians(self.__yaw - 90))
-        self.__position[2] += distance * math.cos(math.radians(self.__yaw - 90))
+        self.__position[0] -= distance * math.sin(math.radians(self.__yaw -
+                                                               90))
+        self.__position[1] -= distance * math.cos(math.radians(self.__yaw -
+                                                               90))
 
     def move_right(self, distance):
         """Move right on distance"""
-        self.__position[0] -= distance * math.sin(math.radians(self.__yaw + 90))
-        self.__position[2] += distance * math.cos(math.radians(self.__yaw + 90))
+        self.__position[0] += distance * math.sin(math.radians(self.__yaw -
+                                                               90))
+        self.__position[1] += distance * math.cos(math.radians(self.__yaw -
+                                                               90))
 
     def move_up(self, distance):
         """Move up on distance"""
-        self.__position[1] -= distance
+        self.__position[2] -= distance
 
     def move_down(self, distance):
         """Move down on distance"""
-        self.__position[1] += distance
+        self.__position[2] += distance
 
     def update(self, delta_time):
         """Update camera state"""
@@ -170,15 +174,15 @@ class FirstPersonCamera(object):
     def draw(self):
         """Apply transform"""
         pyglet.gl.glRotatef(self.__pitch, 1.0, 0.0, 0.0)
-        pyglet.gl.glRotatef(self.__yaw, 0.0, 1.0, 0.0)
+        pyglet.gl.glRotatef(self.__yaw, 0.0, 0.0, 1.0)
         pyglet.gl.glTranslatef(*self.__position)
 
 
 #----------------------ORIGINAL CAMERA-----------------------------------------
-
-
-
-
+#
+#
+#
+#
 # # -*- coding: utf-8 -*-
 # # author: Alexander Savchuk https://gist.github.com/mr-linch
 #
@@ -224,7 +228,7 @@ class FirstPersonCamera(object):
 #
 #     DEFAULT_MOVEMENT_SPEED = 10.0
 #
-#     DEFAULT_MOUSE_SENSITIVITY = 0.025
+#     DEFAULT_MOUSE_SENSITIVITY = 0.5
 #
 #     DEFAULT_KEY_MAP = {
 #         'forward': pyglet.window.key.W,
@@ -232,7 +236,7 @@ class FirstPersonCamera(object):
 #         'left': pyglet.window.key.A,
 #         'right': pyglet.window.key.D,
 #         'up': pyglet.window.key.SPACE,
-#         'down': pyglet.window.key.LSHIFT
+#         'down': pyglet.window.key.LCTRL
 #     }
 #
 #     class InputHandler(object):
@@ -285,12 +289,12 @@ class FirstPersonCamera(object):
 #         """Turn above y-axis"""
 #         self.__pitch += pitch * self.mouse_sensitivity * ((-1) if self.y_inv else 1)
 #
-#     def move_forward(self, distance):
+#     def move_down(self, distance):
 #         """Move forward on distance"""
 #         self.__position[0] -= distance * math.sin(math.radians(self.__yaw))
 #         self.__position[2] += distance * math.cos(math.radians(self.__yaw))
 #
-#     def move_backward(self, distance):
+#     def move_up(self, distance):
 #         """Move backward on distance"""
 #         self.__position[0] += distance * math.sin(math.radians(self.__yaw))
 #         self.__position[2] -= distance * math.cos(math.radians(self.__yaw))
@@ -305,11 +309,11 @@ class FirstPersonCamera(object):
 #         self.__position[0] -= distance * math.sin(math.radians(self.__yaw + 90))
 #         self.__position[2] += distance * math.cos(math.radians(self.__yaw + 90))
 #
-#     def move_up(self, distance):
+#     def move_backward(self, distance):
 #         """Move up on distance"""
 #         self.__position[1] -= distance
 #
-#     def move_down(self, distance):
+#     def move_forward(self, distance):
 #         """Move down on distance"""
 #         self.__position[1] += distance
 #

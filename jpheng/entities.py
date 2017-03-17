@@ -11,13 +11,13 @@ class Particle:
         self.a = np.array(a, dtype=float)  # acceleration
         self.inv_mass = inv_mass  # inverse mass
         self.r = r  # radius
-        self.shape = shapes.Sphere(r, color=color)
+        self.shape = shapes.Sphere(r, p, color=color)
         # Fraction of velocity retained each second, required to remove energy
         # added through numerical instability of the integrator.
         self.damping = 0.995
         # Gravity
-        # self.g = np.array([0, -9.81, 0])
-        self.g = np.zeros(3)
+        self.g = np.array([0, 0, -200])
+        # self.g = np.zeros(3)
 
     def draw(self):
         self.shape.draw()
