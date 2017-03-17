@@ -15,14 +15,14 @@ class Window(pyglet.window.Window):
         pyglet.gl.glEnable(pyglet.gl.GL_DEPTH_TEST)
         self.set_minimum_size(200, 200)
         # set camera
-        self.camera = cam.FirstPersonCamera(self)
+        self.camera = cam.FirstPersonCamera(self, position=(90,90,-50))
         # schedule camera updates
         pyglet.clock.schedule_interval(self.camera.update, 1/120)
         # set level map
         self.level_map = level_map
         # create list of objects in window and schedule their updates
         self.entity_list = []
-        pyglet.clock.schedule_interval(self.update, 1/60)
+        pyglet.clock.schedule_interval(self.update, 1/120)
 
     def set3D(self):
         pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
@@ -49,11 +49,14 @@ class Window(pyglet.window.Window):
         self.entity_list.append(entity)
 
     def boundary_check(self, entity):
-        if entity.p[2] <= self.level_map.floor_level + entity.r:
-            entity.v[2] = -entity.v[2]
+        # x direction
         if entity.p[0] <= -self.level_map.x_lim + entity.r or \
                         entity.p[0] >= self.level_map.x_lim - entity.r:
             entity.v[0] = -entity.v[0]
+        # y direction
         if entity.p[1] <= -self.level_map.y_lim + entity.r or \
                         entity.p[1] >= self.level_map.y_lim - entity.r:
             entity.v[1] = -entity.v[1]
+        # z direction
+        if entity.p[2] <= self.level_map.floor_level + entity.r:
+            entity.v[2] = -entity.v[2]
