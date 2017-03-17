@@ -49,3 +49,47 @@ class Particle(Entity):
         # Gravity
         self.g = np.array([0, 0, -20])
         # self.g = np.zeros(3)
+
+class Bullet(Entity):
+    def __init__(self, p, direction):
+        v = 35*np.array(direction)
+        a = np.zeros(3)
+        inv_mass = 1/2
+        Entity.__init__(self, p, v, a, inv_mass)
+        self.r = 1
+        self.shape = shapes.Sphere(self.r, p, color=(102,51,0))
+        self.damping = 0.995
+        self.g = np.array([0, 0, -1])
+
+class ArtilleryShell(Entity):
+    def __init__(self, p, direction):
+        v = 50*np.array(direction)
+        a = np.zeros(3)
+        inv_mass = 1/200
+        Entity.__init__(self, p, v, a, inv_mass)
+        self.r = 2
+        self.shape = shapes.Sphere(self.r, p, color=(102,51,0))
+        self.damping = 0.99
+        self.g = np.array([0, 0, -20])
+
+class Fireball(Entity):
+    def __init__(self, p, direction):
+        v = 10*np.array(direction)
+        a = np.zeros(3)
+        inv_mass = 1
+        Entity.__init__(self, p, v, a, inv_mass)
+        self.r = 4
+        self.shape = shapes.Sphere(self.r, p, color=(255,0,0))
+        self.damping = 0.9
+        self.g = np.array([0, 0, 0.6])
+
+class Laser(Entity):
+    def __init__(self, p, direction):
+        v = 100*np.array(direction)
+        a = np.zeros(3)
+        inv_mass = 1/0.1
+        Entity.__init__(self, p, v, a, inv_mass)
+        self.r = 1
+        self.shape = shapes.Sphere(self.r, p, color=(255,0,255))
+        self.damping = 0.995
+        self.g = np.array([0, 0, 0])
