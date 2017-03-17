@@ -42,21 +42,33 @@ class Window(pyglet.window.Window):
 
     def update(self, dt):
         for entity in self.entity_list:
-            entity.step(dt)
             self.boundary_check(entity)
+            entity.step(dt)
 
     def add_entity(self, entity):
         self.entity_list.append(entity)
 
     def boundary_check(self, entity):
         # x direction
-        if entity.p[0] <= -self.level_map.x_lim + entity.r or \
-                        entity.p[0] >= self.level_map.x_lim - entity.r:
+        if entity.p[0] <= -self.level_map.x_lim + entity.r:
+            dp = entity.p[0] - (-self.level_map.x_lim + entity.r)
+            entity.move(np.array([-dp,0,0]))
+            entity.v[0] = -entity.v[0]
+        elif entity.p[0] >= self.level_map.x_lim - entity.r:
+            dp = entity.p[0] - (self.level_map.x_lim - entity.r)
+            entity.move(np.array([-dp,0,0]))
             entity.v[0] = -entity.v[0]
         # y direction
-        if entity.p[1] <= -self.level_map.y_lim + entity.r or \
-                        entity.p[1] >= self.level_map.y_lim - entity.r:
+        if entity.p[1] <= -self.level_map.y_lim + entity.r:
+            dp = entity.p[1] - (-self.level_map.y_lim + entity.r)
+            entity.move(np.array([0,-dp,0]))
+            entity.v[1] = -entity.v[1]
+        elif entity.p[1] >= self.level_map.y_lim - entity.r:
+            dp = entity.p[1] - (self.level_map.y_lim - entity.r)
+            entity.move(np.array([0,-dp,0]))
             entity.v[1] = -entity.v[1]
         # z direction
         if entity.p[2] <= self.level_map.floor_level + entity.r:
+            dp = entity.p[2] - (self.level_map.floor_level + entity.r)
+            entity.move(np.array([0,0,-dp]))
             entity.v[2] = -entity.v[2]

@@ -17,6 +17,11 @@ class Entity:
     def draw(self):
         self.shape.draw()
 
+    def move(self, dp):
+        self.p += dp
+        # update vertex list with new position
+        self.shape.move(dp)
+
     def step(self, dt):
         """Calculate the new position, velocity and acceleration of the
         particle based on its acceleration.  Uses simple Euler integration
@@ -24,14 +29,12 @@ class Entity:
         """
         # update position based on last step's velocity and acceleration
         dp = self.v*dt + 0.5*self.a*dt**2
-        self.p += dp
+        self.move(dp)
         # update velocity based on last step's acceleration, reduce previous
         # step's velocity by damping**dt to avoid numerical instability
         self.v = self.v*(self.damping**dt) + self.a*dt
         # set acceleration to current acceleration
         self.a = self.g
-        # update vertex list with new position
-        self.shape.move(dp)
 
 
 class Particle(Entity):
@@ -44,5 +47,5 @@ class Particle(Entity):
         # added through numerical instability of the integrator.
         self.damping = 0.995
         # Gravity
-        self.g = np.array([0, 0, -200])
+        self.g = np.array([0, 0, -20])
         # self.g = np.zeros(3)
