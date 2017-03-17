@@ -1,7 +1,7 @@
 import pyglet
 import numpy as np
 import jpheng.camera as cam
-import jpheng.shapes as shapes
+import jpheng.entities as entities
 
 
 class JphengWindow(pyglet.window.Window):
@@ -20,7 +20,7 @@ class JphengWindow(pyglet.window.Window):
         # schedule camera updates
         pyglet.clock.schedule_interval(self.camera.update, 1/120)
         # create list of objects in window and schedule their updates
-        self.shape_list = []
+        self.entity_list = []
         pyglet.clock.schedule_interval(self.update, 1/60)
 
     def set3D(self):
@@ -34,16 +34,16 @@ class JphengWindow(pyglet.window.Window):
         self.clear()
         self.set3D()
         self.camera.draw()
-        for shape in self.shape_list:
-            shape.draw()
+        for entity in self.entity_list:
+            entity.draw()
         return pyglet.event.EVENT_HANDLED
 
     def update(self, dt):
-        for shape in self.shape_list:
-            shape.step(dt)
+        for entity in self.entity_list:
+            entity.step(dt)
 
-    def add_shape(self, shape):
-        self.shape_list.append(shape)
+    def add_entity(self, entity):
+        self.entity_list.append(entity)
 
 
 if __name__ == '__main__':
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     a = [0, 0, 0]
     inv_mass = 1/5
     r = 4
-    particle = shapes.Particle(p, v, a, inv_mass, r)
-    window.add_shape(particle)
+    particle = entities.Particle(p, v, a, inv_mass, r)
+    window.add_entity(particle)
 
     pyglet.app.run()
