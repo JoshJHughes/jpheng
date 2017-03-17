@@ -2,22 +2,17 @@ import numpy as np
 import jpheng.shapes as shapes
 
 
-class Particle:
-    """Class defining a point mass."""
-    def __init__(self, p, v, a, inv_mass, r, color=None):
+class Entity:
+    def __init__(self, p, v, a, inv_mass):
         # physics properties
         self.p = np.array(p, dtype=float)  # position
         self.v = np.array(v, dtype=float)  # velocity
         self.a = np.array(a, dtype=float)  # acceleration
         self.inv_mass = inv_mass  # inverse mass
-        self.r = r  # radius
-        self.shape = shapes.Sphere(r, p, color=color)
-        # Fraction of velocity retained each second, required to remove energy
-        # added through numerical instability of the integrator.
-        self.damping = 0.995
-        # Gravity
-        self.g = np.array([0, 0, -200])
-        # self.g = np.zeros(3)
+        self.r = None
+        self.shape = None
+        self.damping = None
+        self.g = None
 
     def draw(self):
         self.shape.draw()
@@ -37,3 +32,17 @@ class Particle:
         self.a = self.g
         # update vertex list with new position
         self.shape.move(dp)
+
+
+class Particle(Entity):
+    """Class defining a point mass."""
+    def __init__(self, p, v, a, inv_mass, r, color=None):
+        Entity.__init__(self, p, v, a, inv_mass)
+        self.r = r  # radius
+        self.shape = shapes.Sphere(r, p, color=color)
+        # Fraction of velocity retained each second, required to remove energy
+        # added through numerical instability of the integrator.
+        self.damping = 0.995
+        # Gravity
+        self.g = np.array([0, 0, -200])
+        # self.g = np.zeros(3)
