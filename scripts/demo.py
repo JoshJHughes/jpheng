@@ -6,7 +6,7 @@ import jpheng.shapes as shapes
 
 class JphengWindow(pyglet.window.Window):
     """Custom subclass of pyglet.window, adds a first person camera to the
-    window.
+    window as well as a list of all objects being drawn.
     """
     def __init__(self, *args, **kwargs):
         # call init of superclass (pyglet window)
@@ -17,16 +17,11 @@ class JphengWindow(pyglet.window.Window):
         self.set_minimum_size(200, 200)
         # set camera
         self.camera = cam.FirstPersonCamera(self)
-        # creat particle
-        p = [0,0,-8]
-        v = [0,0,0]
-        a = [0,0,0]
-        inv_mass = 1/5
-        r = 4
-        self.particle = shapes.Particle(p,v,a,inv_mass,r)
         # schedule camera updates
         pyglet.clock.schedule_interval(self.camera.update, 1/120)
-        pyglet.clock.schedule_interval(self.particle.update, 1/60)
+        # create list of objects in window and schedule their updates
+        self.shape_list = []
+        pyglet.clock.schedule_interval(self.update, 1/60)
 
     def set3D(self):
         pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
@@ -39,10 +34,28 @@ class JphengWindow(pyglet.window.Window):
         self.clear()
         self.set3D()
         self.camera.draw()
-        self.particle.draw()
+        for shape in self.shape_list:
+            shape.draw()
         return pyglet.event.EVENT_HANDLED
+
+    def update(self, dt):
+        for shape in self.shape_list:
+            shape.step(dt)
+
+    def add_shape(self, shape):
+        self.shape_list.append(shape)
 
 
 if __name__ == '__main__':
     window = JphengWindow(caption="jpheng Demo", resizable=True)
+
+    # create particle
+    p = [0, 0, -8]
+    v = [0, 0, 0]
+    a = [0, 0, 0]
+    inv_mass = 1/5
+    r = 4
+    particle = shapes.Particle(p, v, a, inv_mass, r)
+    window.add_shape(particle)
+
     pyglet.app.run()

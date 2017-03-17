@@ -63,7 +63,7 @@ class Particle:
     def draw(self):
         self.vertex_list_indexed.draw(pyglet.gl.GL_TRIANGLES)
 
-    def update(self, dt):
+    def step(self, dt):
         """Calculate the new position, velocity and acceleration of the
         particle based on its acceleration.  Uses simple Euler integration
         method.
