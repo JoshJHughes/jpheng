@@ -15,7 +15,8 @@ class Window(pyglet.window.Window):
         pyglet.gl.glEnable(pyglet.gl.GL_DEPTH_TEST)
         self.set_minimum_size(200, 200)
         # set camera
-        self.camera = cam.FirstPersonCamera(self, position=(90,90,-50))
+        self.camera = cam.MouseFirstPersonCamera(self, position=(90,90,-50))
+        self.set_mouse_visible(False)
         # schedule camera updates
         pyglet.clock.schedule_interval(self.camera.update, 1/120)
         # set level map
