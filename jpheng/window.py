@@ -42,12 +42,16 @@ class Window(pyglet.window.Window):
         return pyglet.event.EVENT_HANDLED
 
     def update(self, dt):
+        self.entity_list = list(filter(lambda x: x.alive, self.entity_list))
         for entity in self.entity_list:
             self.boundary_check(entity)
             entity.step(dt)
 
     def add_entity(self, entity):
         self.entity_list.append(entity)
+
+    def remove_entity(self, entity):
+        entity.alive = False
 
     def boundary_check(self, entity):
         # x direction
