@@ -13,6 +13,8 @@ class Entity:
         self.shape = None
         self.damping = None
         self.g = None
+        self.type = None
+        self.alive = True
 
     def draw(self):
         self.shape.draw()
@@ -49,6 +51,8 @@ class Particle(Entity):
         # Gravity
         self.g = np.array([0, 0, -20])
         # self.g = np.zeros(3)
+        self.type = "particle"
+
 
 class Bullet(Entity):
     def __init__(self, p, direction):
@@ -60,6 +64,8 @@ class Bullet(Entity):
         self.shape = shapes.Sphere(self.r, p, color=(102,51,0))
         self.damping = 0.995
         self.g = np.array([0, 0, -1])
+        self.type = "bullet"
+
 
 class ArtilleryShell(Entity):
     def __init__(self, p, direction):
@@ -71,6 +77,8 @@ class ArtilleryShell(Entity):
         self.shape = shapes.Sphere(self.r, p, color=(102,51,0))
         self.damping = 0.99
         self.g = np.array([0, 0, -20])
+        self.type = "artillery_shell"
+
 
 class Fireball(Entity):
     def __init__(self, p, direction):
@@ -82,6 +90,8 @@ class Fireball(Entity):
         self.shape = shapes.Sphere(self.r, p, color=(255,0,0))
         self.damping = 0.9
         self.g = np.array([0, 0, 0.6])
+        self.type = "fireball"
+
 
 class Laser(Entity):
     def __init__(self, p, direction):
@@ -93,3 +103,28 @@ class Laser(Entity):
         self.shape = shapes.Sphere(self.r, p, color=(255,0,255))
         self.damping = 0.995
         self.g = np.array([0, 0, 0])
+        self.type = "laser"
+
+
+class Firework(Entity):
+    def __init__(self, p, v, fuse, parent=False, generation=0):
+        a = 0
+        inv_mass = 1/200
+        Entity.__init__(self, p, v, a, inv_mass)
+        self.parent = parent
+        self.r = 1
+        self.damping = 0.995
+        self.g = np.array([0, 0, -20])
+        self.fuse = fuse
+        self.type = "firework"
+        self.generation = generation
+        if self.generation > 1:
+            self.parent = False
+        if self.parent:
+            self.shape = shapes.Sphere(self.r, p, color=(255,0,0))
+        else:
+            self.shape = shapes.Sphere(self.r, p, color=(0, 0, 255))
+
+    def step(self, dt):
+        super(Firework, self).step(dt)
+        self.fuse -= dt
