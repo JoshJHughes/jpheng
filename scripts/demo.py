@@ -10,15 +10,16 @@ if __name__ == '__main__':
     level_map = maps.EmptyMap()
 
     # create window
-    window = window.Window(level_map, caption="jpheng Demo", resizable=True)
+    window = window.Window(level_map, caption="jpheng Demo", resizable=True,
+                           fullscreen=True)
 
     # create particle
-    p = [0, 0, 2]
-    v = [1, 1.5, 0]
+    p = [0, 0, 20]
+    v = [0, 0, 0]
     a = [0, 0, 0]
     inv_mass = 1/5
-    r = 0.5
-    particle = entities.Particle(p, v, a, inv_mass, r)
+    r = 1
+    particle = entities.Particle(p, v, a, inv_mass, r, color=(25, 86, 103))
     window.add_entity(particle)
 
     # enter main program loop

@@ -49,7 +49,7 @@ class Particle(Entity):
         # added through numerical instability of the integrator.
         self.damping = 0.995
         # Gravity
-        self.g = np.array([0, 0, -20])
+        self.g = np.array([0, 0, 0])
         # self.g = np.zeros(3)
         self.type = "particle"
 

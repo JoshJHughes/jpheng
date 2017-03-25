@@ -4,7 +4,9 @@ import numpy as np
 
 class Sphere:
     """Class defining a sphere."""
-    def __init__(self, r, p, n_lat=32, n_long=32, color=None):
+    def __init__(self, r, p, color=None):
+        n_lat = int(min(20, 5 + r))
+        n_long = int(min(30, 10 + r))
         self.r = r  # radius
         self.n_verts = n_lat*n_long  # number of vertices
         self.draw_mode = pyglet.gl.GL_TRIANGLES

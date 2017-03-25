@@ -17,7 +17,7 @@ if __name__ == '__main__':
     @window.event
     def on_mouse_press(x, y, button, modifiers):
         if button == pyglet.window.mouse.LEFT:
-            theta = np.random.uniform(0, 15*np.pi/180)
+            theta = np.random.uniform(0, 10*np.pi/180)
             phi = np.random.uniform(0, 2*np.pi)
             s = 100
             p = np.array([0,0,0])
