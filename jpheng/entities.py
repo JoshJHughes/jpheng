@@ -15,6 +15,7 @@ class Entity:
         self.g = None
         self.type = None
         self.alive = True
+        self.force_accum = np.zeros(3)
 
     def draw(self):
         self.shape.draw()
@@ -35,8 +36,16 @@ class Entity:
         # update velocity based on last step's acceleration, reduce previous
         # step's velocity by damping**dt to avoid numerical instability
         self.v = self.v*(self.damping**dt) + self.a*dt
-        # set acceleration to current acceleration
-        self.a = self.g
+        # set current acceleration by N2L
+        self.a = self.force_accum*self.inv_mass
+        # clear force accumulator
+        self.clear_force()
+
+    def add_force(self, force):
+        self.force_accum += force
+
+    def clear_force(self):
+        self.force_accum = np.zeros(3)
 
 
 class Particle(Entity):
