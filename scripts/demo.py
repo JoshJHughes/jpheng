@@ -2,6 +2,7 @@ import pyglet
 import jpheng.entities as entities
 import jpheng.window as window
 import jpheng.maps as maps
+import jpheng.force_generators as force
 import numpy as np
 
 

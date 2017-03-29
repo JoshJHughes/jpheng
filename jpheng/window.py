@@ -1,6 +1,7 @@
 import pyglet
 import numpy as np
 from jpheng import camera as cam
+from jpheng import force_generators as force
 
 
 class Window(pyglet.window.Window):
@@ -17,13 +18,16 @@ class Window(pyglet.window.Window):
         # set camera
         self.camera = cam.MouseFirstPersonCamera(self, position=(90,90,-50))
         self.set_mouse_visible(False)
-        # schedule camera updates
-        pyglet.clock.schedule_interval(self.camera.update, 1/120)
         # set level map
         self.level_map = level_map
         # create list of objects in window and schedule their updates
         self.entity_list = []
+        # create a force registry
+        self.registry = force.ForceRegistry()
+        # schedule function calls
+        pyglet.clock.schedule_interval(self.camera.update, 1/120)
         pyglet.clock.schedule_interval(self.update, 1/120)
+        pyglet.clock.schedule_interval(self.registry.update_forces, 1/120)
 
     def set3D(self):
         pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
