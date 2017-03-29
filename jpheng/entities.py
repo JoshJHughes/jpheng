@@ -45,7 +45,7 @@ class Entity:
         self.force_accum += force
 
     def clear_force(self):
-        self.force_accum = np.zeros(3)
+        self.force_accum = self.g/self.inv_mass
 
 
 class Particle(Entity):
