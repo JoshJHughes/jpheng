@@ -2,6 +2,16 @@ import pyglet
 
 
 class EmptyMap:
+    """Simple empty map to run demos in.  Contains floor and four walls.
+    Variables:
+        floor_level: z-coordinate of the floor
+        x_lim: Maximum x-coordinate of the floor
+        y_lim: Maximum y-coordinate of the floor
+        wall_height: Height of the walls
+        boundary: pyglet batch containing the floor and wall vertices
+    Methods:
+        draw: Draw the map
+    """
     def __init__(self, x_lim=100, y_lim=100, wall_height=50):
         self.floor_level = 0
         self.x_lim = x_lim
@@ -51,4 +61,5 @@ class EmptyMap:
             None, ('v3f', wall4_vertices), ('c3B', wall_colors))
 
     def draw(self):
+        """Draw map."""
         self.boundary.draw()

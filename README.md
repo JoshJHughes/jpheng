@@ -1,29 +1,18 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Jpheng is a personal project designed to (one day) become a working physics 
+engine.  It is currently in the very early stages of development and is thus 
+not suitable for use in any project.  I fully expect that all aspects of the 
+code will be significantly altered, extended, and improved.  
 
-### What is this repository for? ###
+### Requirements ###
+Jpheng uses Pyglet and Numpy to handle graphics and numerical aspects of the 
+code.  It is being written with Python 3.5.2.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Installation ###
+Jpheng is not set up to work with any automated installation tools.  If you 
+wish to use Jpheng please download and unpack the source code and install the 
+packages listed in "./requirements.txt" using pip.
 
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+### Using Jpheng ###
+Executable scripts may be found under "./scripts"
