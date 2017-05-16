@@ -5,6 +5,13 @@ import jpheng.maps as maps
 import numpy as np
 
 
+# This demo is intended to showcase the 'firework' class which
+# exhibits special behaviour.  Fireworks have a fuse, when the fuse runs out
+#  the firework will 'die'.  If the firework was a parent it will spawn
+# additional fireworks based on the code in the 'fireworks_rules' function.
+#  If the firework was a child it will simply disappear.  Fireworks can be
+# spawned by left-clicking on the mouse.
+
 if __name__ == '__main__':
     # create level map
     level_map = maps.EmptyMap()
@@ -16,6 +23,8 @@ if __name__ == '__main__':
 
     @window.event
     def on_mouse_press(x, y, button, modifiers):
+        """When left mouse is pressed spawn a new firework with random
+        trajectory."""
         if button == pyglet.window.mouse.LEFT:
             theta = np.random.uniform(0, 10*np.pi/180)
             phi = np.random.uniform(0, 2*np.pi)
@@ -28,10 +37,14 @@ if __name__ == '__main__':
             window.add_entity(entities.Firework(p, v, fuse, parent=True))
 
     def fireworks_rules(dt):
+        """Defines the rules by which the fireworks propagate."""
+        # create list of fireworks out of all entities in the current scene
         fireworks = filter(lambda x: x.type == "firework", window.entity_list)
         for firework in fireworks:
+            # if fuse has burned out, kill the firework
             if firework.fuse <= 0:
                 firework.alive = False
+                # if the firework is a parent, spawn children
                 if firework.parent:
                     n = 10
                     v = np.random.normal(10, 0.1)

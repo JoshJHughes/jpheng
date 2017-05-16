@@ -3,7 +3,17 @@ import numpy as np
 
 
 class Sphere:
-    """Class defining a sphere."""
+    """Class defining a sphere.
+    Variables:
+        r: radius of the sphere
+        n_verts: Number of vertices in the cube
+        draw_mode: OpenGL draw mode for the vertex_list
+        vertex_list: Indexed vertex list containing the vertices and
+            colours of the cube
+    Methods:
+        draw: Draws the sphere in the active pyglet window
+        step: Moves the sphere by an amount dp
+        """
     def __init__(self, r, p, color=None):
         n_lat = int(min(20, 3 + r))
         n_long = int(min(30, 5 + r))
@@ -49,6 +59,7 @@ class Sphere:
             self.n_verts, indices, ('v3f', vertices), ('c3B', self.color))
 
     def draw(self):
+        """Draw sphere."""
         self.vertex_list.draw(self.draw_mode)
 
     def move(self, dp):
@@ -63,11 +74,12 @@ class Cube:
     Variables:
         n_verts: Number of vertices in the cube
         side_length: Length of the cube side
-        vertex_list_indexed: Indexed vertex list containing the vertices and
+        draw_mode: OpenGL draw mode for the vertex_list
+        vertex_list: Indexed vertex list containing the vertices and
             colours of the cube
     Methods:
         draw: Draws the cube in the active pyglet window
-        step: Moves the cube based on given velocity and dt
+        step: Moves the cube by an amount dp
     """
     def __init__(self, r, p, color=None):
         self.n_verts = 8

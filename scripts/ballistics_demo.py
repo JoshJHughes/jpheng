@@ -4,6 +4,9 @@ import jpheng.window as window
 import jpheng.maps as maps
 import numpy as np
 
+# This demo is intended to showcase the ballistics entities.  Left clicking
+# the mouse will spawn a laser bullet in front of the camera, travelling
+# forwards.
 
 if __name__ == '__main__':
     # create level map
