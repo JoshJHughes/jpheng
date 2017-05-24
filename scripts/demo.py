@@ -14,8 +14,9 @@ if __name__ == '__main__':
     level_map = maps.EmptyMap()
 
     # create window
-    window = window.Window(level_map, caption="jpheng Demo", resizable=True,
-                           fullscreen=True)
+    # window = window.Window(level_map, caption="jpheng Demo", resizable=True,
+    #                        fullscreen=True)
+    window = window.Window(level_map, caption="jpheng Demo", resizable=True)
 
     # create particle
     p = [0, 0, 20]
@@ -25,6 +26,9 @@ if __name__ == '__main__':
     r = 1
     particle = entities.Particle(p, v, a, inv_mass, r, color=(187, 86, 103))
     window.add_entity(particle)
+
+    test_generator = force.GravityGenerator(np.array([0, 0, -20]))
+    particle.add_generator(test_generator)
 
     # enter main program loop
     pyglet.app.run()
