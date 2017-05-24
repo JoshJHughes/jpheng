@@ -39,8 +39,6 @@ class Window(pyglet.window.Window):
         self.level_map = level_map
         # create list of objects in window and schedule their updates
         self.entity_list = []
-        # create a force registry
-        self.registry = force.ForceRegistry()
         # schedule function calls
         pyglet.clock.schedule_interval(self.camera.update, 1/120)
         pyglet.clock.schedule_interval(self.update, 1/120)
@@ -71,13 +69,11 @@ class Window(pyglet.window.Window):
         """Call functions needed at each time step of simulation."""
         # remove dead entities from entity_list
         self.entity_list = list(filter(lambda x: x.alive, self.entity_list))
-        # update all forces using time step dt
-        self.registry.update_forces(dt)
         # for each entity, check if in level bounds then advance position,
         # velocity, and acceleration
         for entity in self.entity_list:
             self.boundary_check(entity)
-            entity.step(dt)
+            entity.stepRK4(dt)
 
     def add_entity(self, entity):
         """Add entity to scene."""
