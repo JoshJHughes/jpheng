@@ -1,6 +1,6 @@
 import pyglet
 import jpheng.entities as entities
-import jpheng.window as window
+import jpheng.window as windows
 import jpheng.maps as maps
 import numpy as np
 
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # create window
     # window = window.Window(level_map, caption="jpheng Demo", resizable=True,
     #                        fullscreen=True)
-    window = window.Window(level_map, caption="jpheng Demo", resizable=True)
+    window = windows.Window(level_map, caption="jpheng Demo", resizable=True)
     # window.set_exclusive_mouse(True)
 
     @window.event
