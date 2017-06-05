@@ -28,7 +28,7 @@ if __name__ == '__main__':
     window.add_entity(particle)
 
     test_generator = force.GravityGenerator(np.array([0, 0, -20]))
-    particle.add_generator(test_generator)
+    particle.physics.add_generator(test_generator)
 
     # enter main program loop
     pyglet.app.run()

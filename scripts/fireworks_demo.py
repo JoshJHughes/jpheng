@@ -17,8 +17,9 @@ if __name__ == '__main__':
     level_map = maps.EmptyMap()
 
     # create window
-    window = window.Window(level_map, caption="jpheng Demo", resizable=True,
-                           fullscreen=True)
+    # window = window.Window(level_map, caption="jpheng Demo", resizable=True,
+    #                        fullscreen=True)
+    window = window.Window(level_map, caption="jpheng Demo", resizable=True)
     # window.set_exclusive_mouse(True)
 
     @window.event
@@ -39,7 +40,8 @@ if __name__ == '__main__':
     def fireworks_rules(dt):
         """Defines the rules by which the fireworks propagate."""
         # create list of fireworks out of all entities in the current scene
-        fireworks = filter(lambda x: x.type == "firework", window.entity_list)
+        fireworks = filter(lambda x: isinstance(x, entities.Firework),
+                           window.entity_list)
         for firework in fireworks:
             # if fuse has burned out, kill the firework
             if firework.fuse <= 0:
@@ -56,7 +58,7 @@ if __name__ == '__main__':
                     v_list[:,2] = v*np.cos(thetas)
                     fuse_list = np.random.normal(1.5, 0.7, n)
                     for i in range(n):
-                        window.add_entity(entities.Firework(firework.p,
+                        window.add_entity(entities.Firework(firework.physics.p,
                             v_list[i], fuse_list[i],
                             np.random.choice([True, False]),
                             firework.generation + 1))
