@@ -23,9 +23,6 @@ class Entity:
         self.physics = physics
         self.graphics = graphics
 
-        self.alive = True  # false if the entity should be deleted,
-        # true otherwise
-
     def draw(self):
         """Draw the entity on screen."""
         self.graphics.draw()

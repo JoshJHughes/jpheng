@@ -44,7 +44,7 @@ if __name__ == '__main__':
         for firework in fireworks:
             # if fuse has burned out, kill the firework
             if firework.fuse <= 0:
-                firework.alive = False
+                window.remove_entity(firework)
                 # if the firework is a parent, spawn children
                 if firework.parent:
                     n = 10

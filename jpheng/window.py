@@ -67,10 +67,8 @@ class Window(pyglet.window.Window):
 
     def update(self, dt):
         """Call functions needed at each time step of simulation."""
-        # remove dead entities from entity_list
-        self.entity_list = list(filter(lambda x: x.alive, self.entity_list))
-        # for each entity, check if in level bounds then advance position,
-        # velocity, and acceleration
+        # for each entity, check if in level bounds then call entity update
+        # function
         for entity in self.entity_list:
             self.boundary_check(entity)
             entity.update(dt)
@@ -81,7 +79,7 @@ class Window(pyglet.window.Window):
 
     def remove_entity(self, entity):
         """Remove entity from scene."""
-        entity.alive = False
+        self.entity_list.remove(entity)
 
 # this function should ultimately be handled by collision code
     def boundary_check(self, entity):
