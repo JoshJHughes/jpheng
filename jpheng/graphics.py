@@ -44,13 +44,13 @@ class SphereComponent(GraphicsComponent):
         self.r = r  # radius
         self.n_verts = n_lat*n_long  # number of vertices
         self.draw_mode = pyglet.gl.GL_TRIANGLES  # pyglet draw mode
-        if color == None:
+        if color is None:
             color = np.random.randint(0, 256, 3)
         self.color = color  # color rgb tuple
 
         self.mesh = np.zeros(3*self.n_verts)  # 3 components per vertex
         indices = [0]*3*2*(n_lat - 2)*n_long
-        colors = color*self.n_verts
+        colors = np.tile(color, self.n_verts)
 
         # generate vertices about origin
         for j in range(n_lat):
@@ -91,7 +91,7 @@ class CubeComponent(GraphicsComponent):
         self.n_verts = 8
         self.r = r  # side length
         self.draw_mode = pyglet.gl.GL_QUADS
-        if color == None:
+        if color is None:
             color = np.random.randint(0, 256, 3)
         self.color = color
 
@@ -114,7 +114,7 @@ class CubeComponent(GraphicsComponent):
             3, 0, 5, 4,  # left
             0, 1, 2, 3,  # bottom
             4, 5, 6, 7]  # top
-        colors = color*self.n_verts
+        colors = np.tile(color, self.n_verts)
 
         self.vertex_list = pyglet.graphics.vertex_list_indexed(
             self.n_verts, indices, ('v3f', vertices), ('c3B', colors))

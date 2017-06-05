@@ -4,6 +4,8 @@ import jpheng.window as windows
 import jpheng.maps as maps
 import jpheng.force_generators as force
 import numpy as np
+import jpheng.physics as phy
+import jpheng.graphics as gra
 
 # This demo is intended to showcase a single particle moving around the
 # 'EmptyMap' level.  Press escape to exit the program.
@@ -26,9 +28,6 @@ if __name__ == '__main__':
     r = 1
     particle = entities.Particle(p, v, a, inv_mass, r, color=(187, 86, 103))
     window.add_entity(particle)
-
-    test_generator = force.GravityGenerator(np.array([0, 0, -20]))
-    particle.physics.add_generator(test_generator)
 
     # enter main program loop
     pyglet.app.run()

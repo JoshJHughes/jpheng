@@ -19,10 +19,9 @@ class PhysicsComponent:
         # set physical properties of component
         self.p = np.array(p, dtype=float)  # position, numpy array, [x,y,z]
         self.v = np.array(v, dtype=float)  # velocity, numpy array, [x,y,z]
-        self.a = np.array(a, dtype=float)   # acceleration, numpy array, [x,
-        # y,z]
+        self.a = np.array(a, dtype=float)  # acceleration, numpy array, [x,y,z]
         self.inv_mass = inv_mass  # inverse mass, float
-        self.g = g  # acceleration due to gravity, numpy array, [x,y,z]
+        self.g = np.array(g, dtype=float)  # accel. due to gravity, [x,y,z]
         self.damping = damping  # damping constant, float, see step function
         # store values relating to forces
         self.force_accum = np.zeros(3)  # stores net force acting on the entity
