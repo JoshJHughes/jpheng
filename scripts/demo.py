@@ -19,6 +19,7 @@ if __name__ == '__main__':
     # window = window.Window(level_map, caption="jpheng Demo", resizable=True,
     #                        fullscreen=True)
     window = windows.Window(level_map, caption="jpheng Demo", resizable=True)
+    window.set_exclusive_mouse(True)
 
     # create particle
     p = [0, 0, 20]

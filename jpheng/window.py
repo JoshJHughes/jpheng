@@ -55,7 +55,7 @@ class Window(pyglet.window.Window):
         """Evaluate these functions when the window renders."""
         # clear scene
         self.clear()
-        self.set3D()
+        # self.set3D()
         # transform scene to new camera perspective
         self.camera.draw()
         # draw level map
@@ -63,6 +63,7 @@ class Window(pyglet.window.Window):
         # draw all entities
         for entity in self.entity_list:
             entity.draw()
+        self.set3D()
         return pyglet.event.EVENT_HANDLED
 
     def update(self, dt):
