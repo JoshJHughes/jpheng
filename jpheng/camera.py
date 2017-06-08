@@ -215,7 +215,7 @@ class MouseFirstPersonCamera(object):
 
     DEFAULT_MOVEMENT_SPEED = 75.0
 
-    DEFAULT_MOUSE_SENSITIVITY = 0.005
+    DEFAULT_MOUSE_SENSITIVITY = 0.5
 
     DEFAULT_KEY_MAP = {
         'forward':pyglet.window.key.W,
