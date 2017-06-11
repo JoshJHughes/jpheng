@@ -1,8 +1,6 @@
-appdirs==1.4.3
 cycler==0.10.0
 matplotlib==2.0.2
 numpy==1.13.0
-packaging==16.8
 pyglet==1.2.4
 pyparsing==2.2.0
 python-dateutil==2.6.0
