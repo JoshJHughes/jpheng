@@ -10,9 +10,9 @@ class PhysicsComponent:
         inv_mass: Inverse mass, float
         damping: Damping constant, float, see step function for usage
         g: Acceleration due to gravity, float
-        force_accum: Net force acting on entity, float
+        force_accum: Net force acting on component, float
         force_registry: list containing ForceGenerators which define the forces
-            acting on the entity
+            acting on the component
     """
     def __init__(self, p, v, a, inv_mass, g = np.array([0,0,-20]),
                  damping = 0.995):
@@ -24,7 +24,8 @@ class PhysicsComponent:
         self.g = np.array(g, dtype=float)  # accel. due to gravity, [x,y,z]
         self.damping = damping  # damping constant, float, see step function
         # store values relating to forces
-        self.force_accum = np.zeros(3)  # stores net force acting on the entity
+        self.force_accum = np.zeros(3)  # stores net force acting on the
+                                        # component
         self.force_registry = []
 
     def clear_force_accumulator(self):
@@ -33,11 +34,11 @@ class PhysicsComponent:
         self.force_accum = self.g/self.inv_mass
 
     def add_generator(self, generator):
-        """Add additional force generator to the entity's registry."""
+        """Add additional force generator to the component's registry."""
         self.force_registry.append(generator)
 
     def remove_generator(self, generator):
-        """Remove force generator from the entity's registry."""
+        """Remove force generator from the component's registry."""
         self.force_registry.remove(generator)
 
     def update(self, dt):

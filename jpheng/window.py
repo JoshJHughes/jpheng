@@ -25,7 +25,7 @@ class Window(pyglet.window.Window):
         boundary_check: Checks if entity is within level bounds, if not,
             reflect it back
     """
-    def __init__(self, level_map, mouse_sensitivity=None, *args, **kwargs):
+    def __init__(self, level_map, *args, **kwargs):
         # call init of superclass (pyglet window)
         super(Window, self).__init__(*args, **kwargs)
         # set window properties (overwrites args)
@@ -33,11 +33,7 @@ class Window(pyglet.window.Window):
         pyglet.gl.glEnable(pyglet.gl.GL_DEPTH_TEST)
         self.set_minimum_size(200, 200)
         # set camera
-        if mouse_sensitivity is None:
-            self.camera = cam.MouseFirstPersonCamera(self, position=(90,90,-50))
-        else:
-            self.camera = cam.MouseFirstPersonCamera(self,
-                position=(90, 90, -50),mouse_sensitivity=mouse_sensitivity)
+        self.camera = cam.MouseFirstPersonCamera(self, position=(90,90,-50))
         self.set_mouse_visible(False)
         # set level map
         self.level_map = level_map

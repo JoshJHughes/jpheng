@@ -15,7 +15,7 @@ if __name__ == '__main__':
     # create window
     window = windows.Window(level_map, caption="jpheng Demo", resizable=True,
                            fullscreen=True)
-    # window.set_exclusive_mouse(True)
+    window.set_exclusive_mouse(True)
 
     @window.event
     def on_mouse_press(x, y, button, modifiers):
