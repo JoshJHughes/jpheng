@@ -16,9 +16,9 @@ if __name__ == '__main__':
     level_map = maps.EmptyMap()
 
     # create window
-    # window = window.Window(level_map, caption="jpheng Demo", resizable=True,
-    #                        fullscreen=True)
-    window = windows.Window(level_map, caption="jpheng Demo", resizable=True)
+    window = windows.Window(level_map, width = 800, height = 600,
+                            caption="jpheng Demo", resizable=True)
+    window.set_exclusive_mouse(True)
 
     # create particle
     p = [0, 0, 20]
