@@ -15,7 +15,7 @@ class PhysicsComponent:
             acting on the component
     """
     def __init__(self, p, v, a, inv_mass, g = np.array([0,0,-20]),
-                 damping = 0.995):
+                 damping = 0.99):
         # set physical properties of component
         self.p = np.array(p, dtype=float)  # position, numpy array, [x,y,z]
         self.v = np.array(v, dtype=float)  # velocity, numpy array, [x,y,z]
@@ -57,52 +57,3 @@ class PhysicsComponent:
         self.a = self.force_accum*self.inv_mass
         # clear force accumulator
         self.clear_force_accumulator()
-
-    # Broken RK4 Integrator
-    # def stepRK4(self, dt):
-    #     """Calculate the new position, velocity and acceleration of the
-    #     particle based on its acceleration.  Uses RK4 integrator."""
-    #     # update all forces using time step dt
-    #     self.clear_force_accumulator()
-    #     for generator in self.registry:
-    #         generator.update_force(self, dt)
-    #     # store original position & velocity
-    #     p0 = self.p
-    #     v0 = self.v
-    #     # calculate first estimates of a and v
-    #     k1 = self.force_accum*self.inv_mass
-    #     l1 = self.v
-    #     self.v = v0 + k1*dt/2
-    #     self.p = p0 + l1*dt/2
-    #     # calculate second estimates of a and v
-    #     self.clear_force_accumulator()
-    #     for generator in self.registry:
-    #         generator.update_force(self, dt)
-    #     k2 = self.force_accum*self.inv_mass
-    #     l2 = self.v
-    #     self.v = v0 + k2*dt/2
-    #     self.p = p0 + l2*dt/2
-    #     # calculate third estimates of a and v
-    #     self.clear_force_accumulator()
-    #     for generator in self.registry:
-    #         generator.update_force(self, dt)
-    #     k3 = self.force_accum*self.inv_mass
-    #     l3 = self.v
-    #     self.v = v0 + k3*dt
-    #     self.p = v0 + l3*dt
-    #     # calculate fourth estimates of a and v
-    #     self.clear_force_accumulator()
-    #     for generator in self.registry:
-    #         generator.update_force(self, dt)
-    #     k4 = self.force_accum*self.inv_mass
-    #     l4 = self.v
-    #     # combine weighted estimates of a and v to get v and p
-    #     self.v = v0 + dt*(k1 + 2*k2 + 2*k3 + k4)/6
-    #     self.p = p0
-    #     dp = dt*(l1 + 2*l2 + 2*l3 + l4)/6
-    #     self.move(dp)
-    #     # calculate a using new values of v and p
-    #     self.clear_force_accumulator()
-    #     for generator in self.registry:
-    #         generator.update_force(self, dt)
-    #     self.a = self.force_accum*self.inv_mass
