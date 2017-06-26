@@ -277,11 +277,17 @@ class MouseFirstPersonCamera(object):
     def yaw(self, yaw):
         """Turn above x-axis"""
         self._yaw += yaw*self.mouse_sensitivity
+        # Wrap yaw values to range 0:360 to avoid potential overflow
+        if self._yaw < 0: self._yaw += 360
+        if self._yaw >= 360: self._yaw -= 360
 
     def pitch(self, pitch):
         """Turn above y-axis"""
         self._pitch += pitch*self.mouse_sensitivity*((-1) if self.y_inv
                                                      else 1)
+        # Lock pitch to range -180:0 to avoid flipping the camera upside down
+        self._pitch = abs(self._pitch)
+        self._pitch = -max(0, min(self._pitch, 180))
 
     def move_forward(self, distance):
         """Move forward on distance"""
@@ -350,49 +356,25 @@ class MouseFirstPersonCamera(object):
 
 #----------------------ORIGINAL CAMERA-----------------------------------------
 
-
-#
-#
-#
-#
-# # -*- coding: utf-8 -*-
-# # author: Alexander Savchuk https://gist.github.com/mr-linch
-#
-# import math
-# import collections
-#
-# import pyglet
-#
-#
-# class KeyboardFirstPersonCamera(object):
+# class FirstPersonCamera(object):
 #     """First person camera implementation
-#
 #     Usage:
 #         import pyglet
 #         from pyglet.gl import *
-#         from camera import KeyboardFirstPersonCamera
-#
-#
+#         from camera import FirstPersonCamera
 #         window = pyglet.window.Window(fullscreen=True)
 #         window.set_exclusive_mouse(True)
-#         camera = KeyboardFirstPersonCamera(window)
-#
+#         camera = FirstPersonCamera(window)
 #         @window.event
 #         def on_draw():
 #             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 #             glLoadIdentity()
-#
 #             camera.draw()
-#
 #             # Your draw code here
-#
 #             return pyglet.event.EVENT_HANDLED
-#
 #         def on_update(delta_time):
 #             camera.update(delta_time)
-#
 #             # Your update code here
-#
 #         if __name__ == '__main__':
 #             pyglet.clock.schedule(on_update)
 #             pyglet.app.run()
@@ -400,7 +382,7 @@ class MouseFirstPersonCamera(object):
 #
 #     DEFAULT_MOVEMENT_SPEED = 10.0
 #
-#     DEFAULT_MOUSE_SENSITIVITY = 0.5
+#     DEFAULT_MOUSE_SENSITIVITY = 0.25
 #
 #     DEFAULT_KEY_MAP = {
 #         'forward': pyglet.window.key.W,
@@ -408,7 +390,7 @@ class MouseFirstPersonCamera(object):
 #         'left': pyglet.window.key.A,
 #         'right': pyglet.window.key.D,
 #         'up': pyglet.window.key.SPACE,
-#         'down': pyglet.window.key.LCTRL
+#         'down': pyglet.window.key.LSHIFT
 #     }
 #
 #     class InputHandler(object):
@@ -429,11 +411,10 @@ class MouseFirstPersonCamera(object):
 #
 #     def __init__(self, window, position=(0, 0, 0), key_map=DEFAULT_KEY_MAP, movement_speed=DEFAULT_MOVEMENT_SPEED, mouse_sensitivity=DEFAULT_MOUSE_SENSITIVITY, y_inv=True):
 #         """Create camera object
-#
 #         Arguments:
 #             window -- pyglet window which camera attach
 #             position -- position of camera
-#             key_map -- dict like KeyboardFirstPersonCamera.DEFAULT_KEY_MAP
+#             key_map -- dict like FirstPersonCamera.DEFAULT_KEY_MAP
 #             movement_speed -- speed of camera move (scalar)
 #             mouse_sensitivity -- sensitivity of mouse (scalar)
 #             y_inv -- inversion turn above y-axis
@@ -444,7 +425,7 @@ class MouseFirstPersonCamera(object):
 #         self.__yaw = 0.0
 #         self.__pitch = 0.0
 #
-#         self.__input_handler = KeyboardFirstPersonCamera.InputHandler()
+#         self.__input_handler = FirstPersonCamera.InputHandler()
 #
 #         window.push_handlers(self.__input_handler)
 #
@@ -461,12 +442,12 @@ class MouseFirstPersonCamera(object):
 #         """Turn above y-axis"""
 #         self.__pitch += pitch * self.mouse_sensitivity * ((-1) if self.y_inv else 1)
 #
-#     def move_down(self, distance):
+#     def move_forward(self, distance):
 #         """Move forward on distance"""
 #         self.__position[0] -= distance * math.sin(math.radians(self.__yaw))
 #         self.__position[2] += distance * math.cos(math.radians(self.__yaw))
 #
-#     def move_up(self, distance):
+#     def move_backward(self, distance):
 #         """Move backward on distance"""
 #         self.__position[0] += distance * math.sin(math.radians(self.__yaw))
 #         self.__position[2] -= distance * math.cos(math.radians(self.__yaw))
@@ -481,11 +462,11 @@ class MouseFirstPersonCamera(object):
 #         self.__position[0] -= distance * math.sin(math.radians(self.__yaw + 90))
 #         self.__position[2] += distance * math.cos(math.radians(self.__yaw + 90))
 #
-#     def move_backward(self, distance):
+#     def move_up(self, distance):
 #         """Move up on distance"""
 #         self.__position[1] -= distance
 #
-#     def move_forward(self, distance):
+#     def move_down(self, distance):
 #         """Move down on distance"""
 #         self.__position[1] += distance
 #

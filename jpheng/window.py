@@ -39,8 +39,6 @@ class Window(pyglet.window.Window):
         self.level_map = level_map
         # create list of objects in window and schedule their updates
         self.entity_list = []
-        # create a force registry
-        self.registry = force.ForceRegistry()
         # schedule function calls
         pyglet.clock.schedule_interval(self.camera.update, 1/120)
         pyglet.clock.schedule_interval(self.update, 1/120)
@@ -57,7 +55,7 @@ class Window(pyglet.window.Window):
         """Evaluate these functions when the window renders."""
         # clear scene
         self.clear()
-        self.set3D()
+        # self.set3D()
         # transform scene to new camera perspective
         self.camera.draw()
         # draw level map
@@ -65,19 +63,16 @@ class Window(pyglet.window.Window):
         # draw all entities
         for entity in self.entity_list:
             entity.draw()
+        self.set3D()
         return pyglet.event.EVENT_HANDLED
 
     def update(self, dt):
         """Call functions needed at each time step of simulation."""
-        # remove dead entities from entity_list
-        self.entity_list = list(filter(lambda x: x.alive, self.entity_list))
-        # update all forces using time step dt
-        self.registry.update_forces(dt)
-        # for each entity, check if in level bounds then advance position,
-        # velocity, and acceleration
+        # for each entity, check if in level bounds then call entity update
+        # function
         for entity in self.entity_list:
             self.boundary_check(entity)
-            entity.step(dt)
+            entity.update(dt)
 
     def add_entity(self, entity):
         """Add entity to scene."""
@@ -85,31 +80,37 @@ class Window(pyglet.window.Window):
 
     def remove_entity(self, entity):
         """Remove entity from scene."""
-        entity.alive = False
+        self.entity_list.remove(entity)
 
 # this function should ultimately be handled by collision code
     def boundary_check(self, entity):
         """Check if entity is within level bounds, if not, reflect it back."""
         # x direction
-        if entity.p[0] <= -self.level_map.x_lim + entity.r:
-            dp = entity.p[0] - (-self.level_map.x_lim + entity.r)
-            entity.move(np.array([-dp,0,0]))
-            entity.v[0] = -entity.v[0]
-        elif entity.p[0] >= self.level_map.x_lim - entity.r:
-            dp = entity.p[0] - (self.level_map.x_lim - entity.r)
-            entity.move(np.array([-dp,0,0]))
-            entity.v[0] = -entity.v[0]
+        if entity.physics.p[0] <= -self.level_map.x_lim + entity.graphics.r:
+            dp = entity.physics.p[0] - (-self.level_map.x_lim +
+                                        entity.graphics.r)
+            entity.physics.p += np.array([-dp,0,0])
+            entity.physics.v[0] = -entity.physics.v[0]
+        elif entity.physics.p[0] >= self.level_map.x_lim - entity.graphics.r:
+            dp = entity.physics.p[0] - (self.level_map.x_lim -
+                                        entity.graphics.r)
+            entity.physics.p += np.array([-dp,0,0])
+            entity.physics.v[0] = -entity.physics.v[0]
         # y direction
-        if entity.p[1] <= -self.level_map.y_lim + entity.r:
-            dp = entity.p[1] - (-self.level_map.y_lim + entity.r)
-            entity.move(np.array([0,-dp,0]))
-            entity.v[1] = -entity.v[1]
-        elif entity.p[1] >= self.level_map.y_lim - entity.r:
-            dp = entity.p[1] - (self.level_map.y_lim - entity.r)
-            entity.move(np.array([0,-dp,0]))
-            entity.v[1] = -entity.v[1]
+        if entity.physics.p[1] <= -self.level_map.y_lim + entity.graphics.r:
+            dp = entity.physics.p[1] - (-self.level_map.y_lim +
+                                        entity.graphics.r)
+            entity.physics.p += np.array([0,-dp,0])
+            entity.physics.v[1] = -entity.physics.v[1]
+        elif entity.physics.p[1] >= self.level_map.y_lim - entity.graphics.r:
+            dp = entity.physics.p[1] - (self.level_map.y_lim -
+                                        entity.graphics.r)
+            entity.physics.p += np.array([0,-dp,0])
+            entity.physics.v[1] = -entity.physics.v[1]
         # z direction
-        if entity.p[2] <= self.level_map.floor_level + entity.r:
-            dp = entity.p[2] - (self.level_map.floor_level + entity.r)
-            entity.move(np.array([0,0,-dp]))
-            entity.v[2] = -entity.v[2]
+        if entity.physics.p[2] <= self.level_map.floor_level + \
+                entity.graphics.r:
+            dp = entity.physics.p[2] - (self.level_map.floor_level +
+                                        entity.graphics.r)
+            entity.physics.p += np.array([0,0,-dp])
+            entity.physics.v[2] = -entity.physics.v[2]
