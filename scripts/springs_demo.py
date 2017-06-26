@@ -42,7 +42,7 @@ if __name__ == '__main__':
     marker1 = entities.Particle(pm1, vm1, am1, inv_mass, r, color=(0,0,0))
 
     # add spring force to particle1
-    k1 = 10
+    k1 = 3
     l01 = 70
     spring1 = force.ParticleSpring(particle2.physics, k1, l01)
     spring2 = force.ParticleSpring(particle1.physics, k1, l01)
@@ -58,22 +58,22 @@ if __name__ == '__main__':
     vm2 = [0, 0, 0]
     am2 = [0, 0, 0]
     marker2 = entities.Particle(pm2, vm2, am2, inv_mass, r, color=(0,0,0))
-    k2 = 10
+    k2 = 3
     l02 = 30
     anchor = pm2
     anchored_spring = force.AnchoredSpring(anchor, k2, l02)
     particle3.physics.add_generator(anchored_spring)
 
     # Anchored Bungee
-    p4 = [40, 0, 40]
+    p4 = [40, 0, 80]
     v4 = [0,0,0]
     a4 = [0,0,0]
     particle4 = entities.Particle(p4, v4, a4, inv_mass, r, color=(97,36,83))
-    pm3 = [40, 0, 50]
+    pm3 = [40, 0, 100]
     vm3 = [0,0,0]
     am3 = [0,0,0]
     marker3 = entities.Particle(pm3, vm3, am3, inv_mass, r, color=(0,0,0))
-    k3 = 20
+    k3 = 5
     l03 = 20
     anchor = pm3
     anchored_bungee = force.AnchoredBungee(anchor, k3, l03)
