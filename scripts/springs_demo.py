@@ -79,21 +79,40 @@ if __name__ == '__main__':
     anchored_bungee = force.AnchoredBungee(anchor, k3, l03)
     particle4.physics.add_generator(anchored_bungee)
 
+    # Anchored Stiff Spring
+    p5 = [40, 50, 10]
+    v5 = [0, 0, 0]
+    a5 = [0, 0, 0]
+    particle5 = entities.Particle(p5, v5, a5, inv_mass, r, color=(97, 36, 83))
+    pm4 = [0, 50, 10]
+    vm4 = [0, 0, 0]
+    am4 = [0, 0, 0]
+    marker4 = entities.Particle(pm4, vm4, am4, inv_mass, r, color=(0, 0, 0))
+    k4 = 20
+    damping = 0.1
+    anchor = pm4
+    anchored_spring = force.StiffAnchoredSpring(anchor, k4, damping)
+    particle5.physics.add_generator(anchored_spring)
+
     # remove gravity from particles and markers
     particle1.physics.g = np.zeros(3)
     particle2.physics.g = np.zeros(3)
     particle3.physics.g = np.zeros(3)
+    particle5.physics.g = np.zeros(3)
     marker1.physics.g = np.zeros(3)
     marker2.physics.g = np.zeros(3)
     marker3.physics.g = np.zeros(3)
+    marker4.physics.g = np.zeros(3)
     # add particles to window
     window.add_entity(particle1)
     window.add_entity(particle2)
     window.add_entity(particle3)
     window.add_entity(particle4)
+    window.add_entity(particle5)
     window.add_entity(marker1)
     window.add_entity(marker2)
     window.add_entity(marker3)
+    window.add_entity(marker4)
 
     # enter main program loop
     pyglet.app.run()
