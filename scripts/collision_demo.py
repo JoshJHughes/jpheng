@@ -42,7 +42,7 @@ if __name__ == '__main__':
     window.add_entity(particle1)
     window.add_entity(particle2)
 
-    # simple collision detection, to give a useful demo until prper routines
+    # simple collision detection, to give a useful demo until proper routines
     #  are implemented
     def detect_collision(duration, entity1, entity2):
         p1 = entity1.physics.p

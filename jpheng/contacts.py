@@ -63,6 +63,29 @@ class EntityContact:
         if v_sep >= 0:
             return
 
+        # calculate separation velocity after the collision
+        new_v_sep = -self.restitution*v_sep
+
+        # Check for the additional component of the new separation velocity
+        # caused by acceleration in the direction of the contact normal in
+        # the most recent step. This can cause jittering in resting contacts
+        #  and is removed from the new separation velocity.
+        # Get v caused by acceleration in direction of normal.
+        v_acc = self.entities[0].physics.a
+        if self.entities[1] is not None:
+            v_acc = v_acc - self.entities[1].physics.a
+        v_acc = np.dot(v_acc*duration, self.normal)
+
+        # if we have a closing velocity caused by acceleration then remove
+        # it, making sure we haven't removed more than there was to remove
+        if v_acc < 0:
+            new_v_sep += self.restitution*v_acc
+            if new_v_sep < 0:
+                new_v_sep = 0
+
+        # calculate the change in separation velocity
+        dv_sep = new_v_sep - v_sep
+
         # get total inverse mass
         total_inv_mass = self.entities[0].physics.inv_mass
         if self.entities[1] is not None:
@@ -72,13 +95,11 @@ class EntityContact:
 
         # calculate changes in speed for each entity and apply them in the
         # direction of the contact normal
-        dv_a = -self.entities[0].physics.inv_mass*(1 +
-                self.restitution)*v_sep/total_inv_mass
+        dv_a = self.entities[0].physics.inv_mass*dv_sep/total_inv_mass
         self.entities[0].physics.v += dv_a*self.normal
         if self.entities[1] is not None:
-            dv_b = self.entities[1].physics.inv_mass*(1 +
-                    self.restitution)*v_sep/total_inv_mass
-            self.entities[1].physics.v += dv_b*self.normal
+            dv_b = self.entities[1].physics.inv_mass*dv_sep/total_inv_mass
+            self.entities[1].physics.v -= dv_b*self.normal
 
     def resolve_interpenetration(self, duration):
         # if there is no penetration then return
