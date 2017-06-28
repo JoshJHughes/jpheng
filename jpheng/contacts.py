@@ -40,7 +40,7 @@ class EntityContact:
     def __init__(self, entities, restitution, normal, penetration):
         self.entities = entities
         self.restitution = restitution
-        self.normal = normal
+        self.normal = np.array(normal)
         self.penetration = penetration
 
     def resolve(self, duration):
@@ -115,7 +115,7 @@ class EntityContact:
         self.entities[0].physics.p += \
             self.entities[0].physics.inv_mass*self.penetration*self.normal\
             /total_inv_mass
-        if self.entities[1].physics.p is not None:
+        if self.entities[1] is not None:
             self.entities[1].physics.p -= \
                 self.entities[1].physics.inv_mass*self.penetration*self.normal\
                 /total_inv_mass
