@@ -39,7 +39,7 @@ if __name__ == '__main__':
                                                                   201))
     # resting particle
     p3 = [0, 0, 60]
-    v3 = [0, 0, 0]
+    v3 = [30, 0, 0]
     a3 = [0, 0, 0]
     inv_mass3 = 1/5
     r3 = 10

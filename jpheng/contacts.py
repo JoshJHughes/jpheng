@@ -17,7 +17,11 @@ class EntityContact:
             perspective of self.entities[0] (subscript a),  n = p_a - p_b
             for particles.  Must be normalised.
         penetration: The depth of penetration at the contact in the
-            direction of the contact normal
+            direction of the contact normal.  Positive for greater penetration.
+        entity_movement: The amount that each of the two entities was moved
+            during the interpenetration resolution.  Used by
+            EntityContactResolver to update interpenetration depth without
+            performing the collision detection a second time.
     Methods:
         resolve: Resolves contact for velocity and interpenetration
         calc_separation_velocity: Returns the separation velocity of the
@@ -42,6 +46,7 @@ class EntityContact:
         self.restitution = restitution
         self.normal = np.array(normal)
         self.penetration = penetration
+        self.entity_movement = [np.zeros(3), np.zeros(3)]
 
     def resolve(self, duration):
         """Resolves this contact, for both velocity and interpenetration."""
@@ -112,10 +117,83 @@ class EntityContact:
         # if all entities have infinite mass then there is no effect
         if total_inv_mass == 0: return
 
-        self.entities[0].physics.p += \
-            self.entities[0].physics.inv_mass*self.penetration*self.normal\
-            /total_inv_mass
+        self.entity_movement[0] = self.entities[0].physics.inv_mass*\
+                                  self.penetration*self.normal/total_inv_mass
+        self.entities[0].physics.p += self.entity_movement[0]
+
         if self.entities[1] is not None:
-            self.entities[1].physics.p -= \
-                self.entities[1].physics.inv_mass*self.penetration*self.normal\
-                /total_inv_mass
+            self.entity_movement[1] = self.entities[1].physics.inv_mass*\
+                                    self.penetration*self.normal/total_inv_mass
+            self.entities[1].physics.p -= self.entity_movement[1]
+
+class EntityContactResolver:
+    """Contact resolution algorithm for entity contacts.  One
+    EntityContactResolver works for the entire simulation.
+    Variables:
+        max_iter: Maximum number of iterations used by the resolution
+            algorithm.
+    Methods:
+        resolve_contacts: Resolves a given list of contacts.  If there are
+            multiple contacts then resolves them in the order of ascending
+            v_sep then in order of descending interpenetration if there are no
+            contacts with v_sep < 0.  Adjusts penetration for every contact
+            after each contact resolution.  If there are no contacts with
+            v_sep < 0 or penetration > 0 then the algorithm returns.  While
+            the algorithm can resolve penetrations caused by other collision
+            resolutions it cannot register collisions with entities which do
+            not already have a registered contact.
+    """
+    def __init__(self, max_iter):
+        self.max_iter = max_iter
+
+    def resolve_contacts(self, duration, contacts):
+        n_contacts = len(contacts)
+        iter = 0
+
+        while iter < self.max_iter:
+            min_v_sep = float('inf')
+            min_v_sep_index = n_contacts
+            max_penetration = -float('inf')
+            max_penetration_index = n_contacts
+
+            # find minimum separation velocity and maximum penetration depth
+            for i in range(n_contacts):
+                v_sep = contacts[i].calc_separation_vel()
+                if v_sep < min_v_sep:
+                    min_v_sep = v_sep
+                    min_v_sep_index = i
+                if contacts[i].penetration > max_penetration:
+                    max_penetration = contacts[i].penetration
+                    max_penetration_index = i
+
+            # resolve contact with minimum v_sep first, then once there are
+            # no contacts with negative v_sep resolve contact with maximum
+            # penetration.  Repeat until either there are no contacts with
+            # v_sep < 0 or max_pen > 0, or iter > max_iter.
+            if min_v_sep < 0:
+                contacts[min_v_sep_index].resolve(duration)
+                index = min_v_sep_index
+
+            elif max_penetration > 0:
+                contacts[max_penetration_index].resolve(duration)
+                index = max_penetration_index
+            else:
+                return
+
+            # Once a contact has been resolved the entities in question may
+            # have moved apart.  This could push them further into other
+            # entities.  Adjust penetration depths for all other entities
+            # in the list which were also contacting the moved entities.
+            move = contacts[index].entity_movement
+            for contact in contacts:
+                if contact.entities[0] == contacts[index].entities[0]:
+                    contact.penetration -= np.dot(move[0], contact.normal)
+                elif contact.entities[0] == contacts[index].entities[1]:
+                    contact.penetration -= np.dot(move[1], contact.normal)
+                if contact.entities[1] is not None:
+                    if contact.entities[1] == contacts[index].entities[0]:
+                        contact.penetration += np.dot(move[0], contact.normal)
+                    elif contact.entities[1] == contacts[index].entities[1]:
+                        contact.penetration += np.dot(move[1], contact.normal)
+
+            iter += 1
