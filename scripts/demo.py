@@ -2,7 +2,7 @@ import pyglet
 import jpheng.entities as entities
 import jpheng.window as windows
 import jpheng.maps as maps
-import jpheng.force_generators as force
+import jpheng.pfgen as force
 import numpy as np
 import jpheng.physics as phy
 import jpheng.graphics as gra

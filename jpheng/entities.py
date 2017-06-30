@@ -12,9 +12,7 @@ class Entity:
     Variables:
         physics: PhysicsComponent object, handles entity physics
         graphics: GraphicsComponent object, handles entity graphics
-
         type: Entity type, string, e.g. "firework"
-        alive: Boolean, False if entity should be deleted, True otherwise
     Methods:
         draw: Draw the entity
         update: Call the component update routines
@@ -27,10 +25,10 @@ class Entity:
         """Draw the entity on screen."""
         self.graphics.draw()
 
-    def update(self, dt):
+    def step(self, dt):
         """Call the component update routines."""
-        self.physics.update(dt)
-        self.graphics.update(self, dt)
+        self.physics.step(dt)
+        self.graphics.step(self, dt)
 
 
 class Particle(Entity):

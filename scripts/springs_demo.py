@@ -2,10 +2,11 @@ import pyglet
 import jpheng.entities as entities
 import jpheng.window as windows
 import jpheng.maps as maps
-import jpheng.force_generators as force
+import jpheng.pfgen as force
 import numpy as np
 import jpheng.physics as phy
 import jpheng.graphics as gra
+from jpheng import pworld
 
 # This demo is intended to showcase a single particle moving around the
 # 'EmptyMap' level.  Press escape to exit the program.
@@ -13,12 +14,12 @@ import jpheng.graphics as gra
 
 if __name__ == '__main__':
     # create level map
-    level_map = maps.EmptyMap()
+    xlim = [-100, 100]
+    ylim = [-100, 100]
+    zlim = [0, 50]
+    level_map = maps.EmptyMap(xlim, ylim, zlim)
 
-    # create window
-    window = windows.Window(level_map, width = 800, height = 600,
-                            caption="jpheng Demo", resizable=True)
-    window.set_exclusive_mouse(True)
+    world = pworld.ParticleWorld(xlim, ylim, zlim)
 
     # Particle Spring
     # create particle1
@@ -44,10 +45,10 @@ if __name__ == '__main__':
     # add spring force to particle1
     k1 = 3
     l01 = 70
-    spring1 = force.ParticleSpring(particle2.physics, k1, l01)
-    spring2 = force.ParticleSpring(particle1.physics, k1, l01)
-    particle1.physics.add_generator(spring1)
-    particle2.physics.add_generator(spring2)
+    spring1 = force.ParticleSpring(particle2, k1, l01)
+    spring2 = force.ParticleSpring(particle1, k1, l01)
+    world.force_registry.add(particle1, spring1)
+    world.force_registry.add(particle2, spring2)
 
     # Anchored Spring
     p3 = [40, 40, 10]
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     l02 = 30
     anchor = pm2
     anchored_spring = force.AnchoredSpring(anchor, k2, l02)
-    particle3.physics.add_generator(anchored_spring)
+    world.force_registry.add(particle3, anchored_spring)
 
     # Anchored Bungee
     p4 = [40, 0, 80]
@@ -77,7 +78,7 @@ if __name__ == '__main__':
     l03 = 20
     anchor = pm3
     anchored_bungee = force.AnchoredBungee(anchor, k3, l03)
-    particle4.physics.add_generator(anchored_bungee)
+    world.force_registry.add(particle4, anchored_bungee)
 
     # Anchored Stiff Spring
     p5 = [40, 50, 10]
@@ -92,7 +93,7 @@ if __name__ == '__main__':
     damping = 0.1
     anchor = pm4
     anchored_spring = force.StiffAnchoredSpring(anchor, k4, damping)
-    particle5.physics.add_generator(anchored_spring)
+    world.force_registry.add(particle5, anchored_spring)
 
     # remove gravity from particles and markers
     particle1.physics.g = np.zeros(3)
@@ -104,15 +105,20 @@ if __name__ == '__main__':
     marker3.physics.g = np.zeros(3)
     marker4.physics.g = np.zeros(3)
     # add particles to window
-    window.add_entity(particle1)
-    window.add_entity(particle2)
-    window.add_entity(particle3)
-    window.add_entity(particle4)
-    window.add_entity(particle5)
-    window.add_entity(marker1)
-    window.add_entity(marker2)
-    window.add_entity(marker3)
-    window.add_entity(marker4)
+    world.add_particle(particle1)
+    world.add_particle(particle2)
+    world.add_particle(particle3)
+    world.add_particle(particle4)
+    world.add_particle(particle5)
+    world.add_particle(marker1)
+    world.add_particle(marker2)
+    world.add_particle(marker3)
+    world.add_particle(marker4)
+
+    # create window
+    window = windows.Window(world, level_map, width=800, height=600,
+                            caption="jpheng Demo", resizable=True)
+    window.set_exclusive_mouse(True)
 
     # enter main program loop
     pyglet.app.run()

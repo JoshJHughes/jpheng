@@ -1,12 +1,12 @@
 import numpy as np
 
-class EntityContact:
-    """An EntityContact represents two entities in contact.  Resolving a
+class ParticleContact:
+    """An ParticleContact represents two entities in contact.  Resolving a
     contact removes interpenetration and applies sufficient impulse to keep
     them apart.  Colliding bodies may also rebound.
 
     This class's methods should not be called, to resolve a set of contacts
-    use the EntityContactResolver class.
+    use the ParticleContactResolver class.
     Variables:
         entities: List containing the entities involved in the contact.
             If the second element is None then the collision is with a
@@ -20,7 +20,7 @@ class EntityContact:
             direction of the contact normal.  Positive for greater penetration.
         entity_movement: The amount that each of the two entities was moved
             during the interpenetration resolution.  Used by
-            EntityContactResolver to update interpenetration depth without
+            ParticleContactResolver to update interpenetration depth without
             performing the collision detection a second time.
     Methods:
         resolve: Resolves contact for velocity and interpenetration
@@ -127,9 +127,9 @@ class EntityContact:
             self.entities[1].physics.p -= self.entity_movement[1]
 
 # currently unused
-class EntityContactResolver:
+class ParticleContactResolver:
     """Contact resolution algorithm for entity contacts.  One
-    EntityContactResolver works for the entire simulation.
+    ParticleContactResolver works for the entire simulation.
     Variables:
         max_iter: Maximum number of iterations used by the resolution
             algorithm.
@@ -217,6 +217,6 @@ def detect_particle_contacts(particles):
                 restitution = 1
                 normal = p_sep/np.linalg.norm(p_sep)
                 penetration = r1 + r2 - np.abs(np.linalg.norm(p_sep))
-                contact_list.append(EntityContact(contact_pair, restitution,
-                                              normal, penetration))
+                contact_list.append(ParticleContact(contact_pair, restitution,
+                                                    normal, penetration))
     return contact_list

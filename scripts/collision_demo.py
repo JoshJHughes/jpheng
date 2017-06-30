@@ -2,11 +2,12 @@ import pyglet
 import jpheng.entities as entities
 import jpheng.window as windows
 import jpheng.maps as maps
-import jpheng.force_generators as force
+import jpheng.pfgen as force
 import numpy as np
 import jpheng.physics as phy
 import jpheng.graphics as gra
-import jpheng.contacts as contacts
+import jpheng.pcontacts as contacts
+from jpheng import pworld
 
 # This demo is intended to showcase a single particle moving around the
 # 'EmptyMap' level.  Press escape to exit the program.
@@ -14,13 +15,12 @@ import jpheng.contacts as contacts
 
 if __name__ == '__main__':
     # create level map
-    level_map = maps.EmptyMap(x_lim = 60, y_lim = 60)
+    xlim = [-60, 60]
+    ylim = [-60, 60]
+    zlim = [0, 50]
+    level_map = maps.EmptyMap(xlim, ylim, zlim)
 
-    # create window
-    window = windows.Window(level_map, caption="jpheng Demo", resizable=True,
-                            fullscreen=True)
-    window.set_exclusive_mouse(True)
-    # window = windows.Window(level_map, caption="jpheng Demo", resizable=True)
+    world = pworld.ParticleWorld(xlim, ylim, zlim)
 
     # create particles
     p1 = [0, 30, 20]
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     inv_mass12 = 1 / 10
     r12 = 10
     particle12 = entities.Particle(p12, v12, a12, inv_mass12, r12)
-    
+
     # resting particle
     pr = [0, 0, 60]
     vr = [70, -102, 0]
@@ -119,31 +119,38 @@ if __name__ == '__main__':
                                                                     201))
 
     # add particles to window
-    window.add_entity(particle1)
-    window.add_entity(particle2)
-    window.add_entity(particle3)
-    window.add_entity(particle4)
-    window.add_entity(particle5)
-    window.add_entity(particle6)
-    window.add_entity(particle7)
-    window.add_entity(particle8)
-    window.add_entity(particle9)
-    window.add_entity(particle10)
-    window.add_entity(particle11)
-    window.add_entity(particle12)
-    window.add_entity(particler)
+    world.add_particle(particle1)
+    world.add_particle(particle2)
+    world.add_particle(particle3)
+    world.add_particle(particle4)
+    world.add_particle(particle5)
+    world.add_particle(particle6)
+    world.add_particle(particle7)
+    world.add_particle(particle8)
+    world.add_particle(particle9)
+    world.add_particle(particle10)
+    world.add_particle(particle11)
+    world.add_particle(particle12)
+    world.add_particle(particler)
 
     # hacked together to test resting contacts
-    def resting_contact_test(duration, entity):
-        if (entity.physics.p[2] - entity.graphics.r) <= 50:
-            entities = [entity, None]
+    def resting_contact_test(duration, particle):
+        if (particle.physics.p[2] - particle.graphics.r) <= 50:
+            entities = [particle, None]
             restitution = 1
             normal = [0,0,1]
-            penetration = 50 - (entity.physics.p[2] - entity.graphics.r)
-            contact = contacts.EntityContact(entities, restitution, normal,
+            penetration = 50 - (particle.physics.p[2] - particle.graphics.r)
+            contact = contacts.ParticleContact(entities, restitution, normal,
                                              penetration)
             contact.resolve(duration)
     pyglet.clock.schedule_interval(resting_contact_test, 1/120, particler)
 
+    # create window
+    # window = windows.Window(world, level_map, caption="jpheng Demo",
+    #                         resizable=True,
+    #                         fullscreen=True)
+    # window.set_exclusive_mouse(True)
+    window = windows.Window(world, level_map, caption="jpheng Demo",
+                            resizable=True)
     # enter main program loop
     pyglet.app.run()
