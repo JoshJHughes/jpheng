@@ -15,7 +15,7 @@ class PhysicsComponent:
             acting on the component
     """
     def __init__(self, p, v, a, inv_mass, g = np.array([0,0,-20]),
-                 damping = 0.99):
+                 damping = 0.999):
         # set physical properties of component
         self.p = np.array(p, dtype=float)  # position, numpy array, [x,y,z]
         self.v = np.array(v, dtype=float)  # velocity, numpy array, [x,y,z]

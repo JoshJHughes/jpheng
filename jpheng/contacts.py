@@ -126,6 +126,7 @@ class EntityContact:
                                     self.penetration*self.normal/total_inv_mass
             self.entities[1].physics.p -= self.entity_movement[1]
 
+# currently unused
 class EntityContactResolver:
     """Contact resolution algorithm for entity contacts.  One
     EntityContactResolver works for the entire simulation.
@@ -158,7 +159,7 @@ class EntityContactResolver:
 
             # find minimum separation velocity and maximum penetration depth
             for i in range(n_contacts):
-                v_sep = contacts[i].calc_separation_vel()
+                v_sep = contacts[i].calc_separation_velocity()
                 if v_sep < min_v_sep:
                     min_v_sep = v_sep
                     min_v_sep_index = i
@@ -197,3 +198,25 @@ class EntityContactResolver:
                         contact.penetration += np.dot(move[1], contact.normal)
 
             iter += 1
+
+def detect_particle_contacts(particles):
+    n_particles = len(particles)
+    contact_list = []
+    for i in range(n_particles-1):
+        for j in range(i+1, n_particles):
+            p1 = particles[i].physics.p
+            p2 = particles[j].physics.p
+
+            r1 = particles[i].graphics.r
+            r2 = particles[j].graphics.r
+
+            p_sep = p1-p2
+
+            if np.abs(np.linalg.norm(p_sep)) < (r1+r2):
+                contact_pair = [particles[i], particles[j]]
+                restitution = 1
+                normal = p_sep/np.linalg.norm(p_sep)
+                penetration = r1 + r2 - np.abs(np.linalg.norm(p_sep))
+                contact_list.append(EntityContact(contact_pair, restitution,
+                                              normal, penetration))
+    return contact_list
