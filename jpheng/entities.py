@@ -76,7 +76,7 @@ class Firework(Entity):
         graphics = gra.SphereComponent(r, color)
         Entity.__init__(self, physics, graphics)
 
-    def update(self, dt):
+    def step(self, dt):
         """In addition to default entity update, reduce fuse by dt."""
-        Entity.update(self, dt)
+        Entity.step(self, dt)
         self.fuse -= dt

@@ -3,18 +3,26 @@ import jpheng.entities as entities
 import jpheng.window as windows
 import jpheng.maps as maps
 import numpy as np
+from jpheng import pworld
 
 # This demo is intended to showcase the ballistics entities.  Left clicking
 # the mouse will spawn a laser bullet in front of the camera, travelling
 # forwards.
 
 if __name__ == '__main__':
-    # create level map
-    level_map = maps.EmptyMap()
 
+    xlim = [-100, 100]
+    ylim = [-100, 100]
+    zlim = [0, 50]
+
+    world = pworld.ParticleWorld(xlim, ylim, zlim)
+
+    # create level map
+    level_map = maps.EmptyMap(xlim, ylim, zlim)
     # create window
-    window = windows.Window(level_map, caption="jpheng Demo", resizable=True,
-                           fullscreen=True)
+    window = windows.Window(world, level_map, caption="jpheng Demo",
+                            resizable=True,
+                            fullscreen=True)
     window.set_exclusive_mouse(True)
 
     @window.event
@@ -31,7 +39,7 @@ if __name__ == '__main__':
             z = np.sin(np.radians(pitch-90))
             dir = np.array([-x, -y, z])
             dir /= np.linalg.norm([x,y,z])
-            window.add_entity(entities.Laser(p, dir))
+            world.add_particle(entities.Laser(p, dir))
 
     # enter main program loop
     pyglet.app.run()
