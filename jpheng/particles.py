@@ -3,19 +3,17 @@ import jpheng.physics as phy
 import jpheng.graphics as gra
 
 
-class Entity:
-    """Parent class for all objects which are rendered in-simulation.
-    Stores a position, velocity, acceleration, mass, radius, shape, damping
-    constant, gravitational constant, type, force accumulator, and variable
-    to determine whether an entity is 'alive', i.e. whether it should be
-    deleted.
+class Particle:
+    """Parent class for all particle objects which are rendered in-simulation.
+    Stores a PhysicsComponent and a GraphicsComponent, the former of which
+    describes the particle's physics properties and behaviour, the latter of
+    which describes the graphical properties and drawing methods.
     Variables:
         physics: PhysicsComponent object, handles entity physics
         graphics: GraphicsComponent object, handles entity graphics
-        type: Entity type, string, e.g. "firework"
     Methods:
-        draw: Draw the entity
-        update: Call the component update routines
+        draw: Draw the particle
+        step: Call the component step routines
     """
     def __init__(self, physics, graphics):
         self.physics = physics
@@ -31,15 +29,15 @@ class Entity:
         self.graphics.step(self, dt)
 
 
-class Particle(Entity):
+class QuickParticle(Particle):
     """Class defining a point mass."""
     def __init__(self, p, v, a, inv_mass, r, color=None):
         physics = phy.PhysicsComponent(p, v, a, inv_mass)
         graphics = gra.SphereComponent(r, color)
-        Entity.__init__(self, physics, graphics)
+        Particle.__init__(self, physics, graphics)
 
 
-class Laser(Entity):
+class Laser(Particle):
     """Class defining a laser bullet."""
     def __init__(self, p, direction):
         v = 100*np.array(direction)
@@ -50,10 +48,10 @@ class Laser(Entity):
         g = np.array([0,0,0])
         physics = phy.PhysicsComponent(p, v, a, inv_mass, g)
         graphics = gra.SphereComponent(r, color)
-        Entity.__init__(self, physics, graphics)
+        Particle.__init__(self, physics, graphics)
 
 
-class Firework(Entity):
+class Firework(Particle):
     """Class defining a firework.  Intended for use with rules found in
     'fireworks_demo.py'"""
     def __init__(self, p, v, fuse, parent=True, generation=0):
@@ -74,9 +72,9 @@ class Firework(Entity):
 
         physics = phy.PhysicsComponent(p, v, a, inv_mass)
         graphics = gra.SphereComponent(r, color)
-        Entity.__init__(self, physics, graphics)
+        Particle.__init__(self, physics, graphics)
 
     def step(self, dt):
         """In addition to default entity update, reduce fuse by dt."""
-        Entity.step(self, dt)
+        Particle.step(self, dt)
         self.fuse -= dt

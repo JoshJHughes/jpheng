@@ -1,5 +1,5 @@
 import pyglet
-import jpheng.entities as entities
+import jpheng.particles as entities
 import jpheng.window as windows
 import jpheng.maps as maps
 import jpheng.pfgen as force
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     a = [0, 0, 0]
     inv_mass = 1/5
     r = 1
-    particle = entities.Particle(p, v, a, inv_mass, r, color=(187, 86, 103))
+    particle = entities.QuickParticle(p, v, a, inv_mass, r, color=(187, 86, 103))
     world.add_particle(particle)
 
     # enter main program loop

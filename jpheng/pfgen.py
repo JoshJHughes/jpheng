@@ -16,7 +16,7 @@ class ParticleForceRegistry:
         """Keeps track of one force generator and the physics component it 
         applies to.
         Variables:
-            particle: A Particle
+            particle: A QuickParticle
             generator: a ForceGenerator which acts on particle
         """
         def __init__(self, particle, generator):

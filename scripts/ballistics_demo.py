@@ -1,5 +1,5 @@
 import pyglet
-import jpheng.entities as entities
+import jpheng.particles as entities
 import jpheng.window as windows
 import jpheng.maps as maps
 import numpy as np
