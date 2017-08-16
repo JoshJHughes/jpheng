@@ -114,7 +114,7 @@ if __name__ == '__main__':
     particler = particles.QuickParticle(pr, vr, ar, inv_massr, rr, color=(76, 96,
                                                                           201))
 
-    # add particles to window
+    # add particles to world
     world.add_particle(particle1)
     world.add_particle(particle2)
     world.add_particle(particle3)

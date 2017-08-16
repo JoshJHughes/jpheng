@@ -1,7 +1,7 @@
 import numpy as np
 
 class ParticleContact:
-    """An ParticleContact represents two entities in contact.  Resolving a
+    """A ParticleContact represents two entities in contact.  Resolving a
     contact removes interpenetration and applies sufficient impulse to keep
     them apart.  Colliding bodies may also rebound.
 
@@ -41,7 +41,8 @@ class ParticleContact:
             p_b' = p_b - (m_a/(m_a+m_b))*d*n
             where d is the penetration depth and n is the contact normal
     """
-    def __init__(self, entities, restitution, normal, penetration):
+    def __init__(self, entities=None, restitution=None, normal=None,
+                 penetration=None):
         self.entities = entities
         self.restitution = restitution
         self.normal = np.array(normal)
@@ -126,6 +127,14 @@ class ParticleContact:
                                     self.penetration*self.normal/total_inv_mass
             self.entities[1].physics.p -= self.entity_movement[1]
 
+class ParticleContactGenerator:
+    """An interface for contact generators."""
+    def gen_contacts(self):
+        """Detects whether any contacts occur and returns a list of all the 
+        contacts it detects.
+        """
+        pass
+
 # currently unused
 class ParticleContactResolver:
     """Contact resolution algorithm for entity contacts.  One
@@ -199,24 +208,31 @@ class ParticleContactResolver:
 
             iter += 1
 
-def detect_particle_contacts(particles):
-    n_particles = len(particles)
-    contact_list = []
-    for i in range(n_particles-1):
-        for j in range(i+1, n_particles):
-            p1 = particles[i].physics.p
-            p2 = particles[j].physics.p
+class ParticleCollisionGenerator(ParticleContactGenerator):
+    """Detects all current particle collisions in the given list 
+    of particles.
+    """
+    def __init__(self, particles):
+        self.particles = particles
+        
+    def gen_contacts(self):
+        n_particles = len(self.particles)
+        contact_list = []
+        for i in range(n_particles - 1):
+            for j in range(i + 1, n_particles):
+                p1 = self.particles[i].physics.p
+                p2 = self.particles[j].physics.p
 
-            r1 = particles[i].graphics.r
-            r2 = particles[j].graphics.r
+                r1 = self.particles[i].graphics.r
+                r2 = self.particles[j].graphics.r
 
-            p_sep = p1-p2
+                p_sep = p1 - p2
 
-            if np.abs(np.linalg.norm(p_sep)) < (r1+r2):
-                contact_pair = [particles[i], particles[j]]
-                restitution = 1
-                normal = p_sep/np.linalg.norm(p_sep)
-                penetration = r1 + r2 - np.abs(np.linalg.norm(p_sep))
-                contact_list.append(ParticleContact(contact_pair, restitution,
-                                                    normal, penetration))
-    return contact_list
+                if np.abs(np.linalg.norm(p_sep)) < (r1 + r2):
+                    contact_pair = [self.particles[i], self.particles[j]]
+                    restitution = 1
+                    normal = p_sep / np.linalg.norm(p_sep)
+                    penetration = r1 + r2 - np.abs(np.linalg.norm(p_sep))
+                    contact_list.append(ParticleContact(contact_pair, 
+                                        restitution, normal, penetration))
+        return contact_list
