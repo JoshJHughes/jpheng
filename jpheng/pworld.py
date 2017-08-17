@@ -19,6 +19,8 @@ class ParticleWorld:
         # enable collisions for all particles
         self.contact_generators.append(pcontacts.ParticleCollisionGenerator(
             self.particle_list))
+        self.contact_generators.append(pcontacts.BoundaryCollisionGenerator(
+            self.particle_list, self.xlim, self.ylim, self.zlim))
 
     def step(self, dt):
         # update all forces
@@ -28,7 +30,7 @@ class ParticleWorld:
             particle.step(dt)
         # generate contacts
         self.generate_contacts()
-        self.boundary_check(self.particle_list)
+        # self.boundary_check(self.particle_list)
         # process contacts
         for contact in self.contacts:
             contact.resolve(dt)
@@ -47,56 +49,3 @@ class ParticleWorld:
         append self.contacts with the results."""
         for generator in self.contact_generators:
             self.contacts = self.contacts + generator.gen_contacts()
-
-    def boundary_check(self, particles):
-        """Check if entity is within level bounds, if not, reflect it back."""
-        for particle in particles:
-            # x direction
-            if particle.physics.p[0] <= self.xlim[0] + \
-            particle.graphics.r:
-                contact_pair = [particle, None]
-                restitution = 1
-                normal = np.array([1, 0, 0])
-                penetration = self.xlim[0] + particle.graphics.r - \
-                              particle.physics.p[0]
-                self.contacts.append(pcontacts.ParticleContact(contact_pair,
-                    restitution, normal, penetration))
-            elif particle.physics.p[0] >= self.xlim[1] - \
-            particle.graphics.r:
-                contact_pair = [particle, None]
-                restitution = 1
-                normal = np.array([-1, 0, 0])
-                penetration = self.xlim[1] - particle.graphics.r - \
-                              particle.physics.p[0]
-                self.contacts.append(pcontacts.ParticleContact(contact_pair,
-                    restitution, normal, penetration))
-            # y direction
-            if particle.physics.p[1] <= self.ylim[0] + \
-            particle.graphics.r:
-                contact_pair = [particle, None]
-                restitution = 1
-                normal = np.array([0, 1, 0])
-                penetration = self.ylim[0] + particle.graphics.r - \
-                              particle.physics.p[1]
-                self.contacts.append(pcontacts.ParticleContact(contact_pair,
-                    restitution, normal, penetration))
-            elif particle.physics.p[1] >= self.ylim[1] - \
-            particle.graphics.r:
-                contact_pair = [particle, None]
-                restitution = 1
-                normal = np.array([0, -1, 0])
-                penetration = self.ylim[1] - particle.graphics.r - \
-                              particle.physics.p[1]
-                self.contacts.append(pcontacts.ParticleContact(contact_pair,
-                    restitution, normal, penetration))
-            # z direction
-            if particle.physics.p[2] <= self.zlim[0] + \
-            particle.graphics.r:
-                contact_pair = [particle, None]
-                restitution = 1
-                normal = np.array([0, 0, 1])
-                penetration = self.zlim[0] + \
-                              particle.graphics.r - \
-                              particle.physics.p[2]
-                self.contacts.append(pcontacts.ParticleContact(contact_pair,
-                    restitution, normal, penetration))

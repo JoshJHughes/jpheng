@@ -142,11 +142,11 @@ if __name__ == '__main__':
     pyglet.clock.schedule_interval(resting_contact_test, 1/120, particler)
 
     # create window
-    # window = windows.Window(world, level_map, caption="jpheng Demo",
-    #                         resizable=True,
-    #                         fullscreen=True)
-    # window.set_exclusive_mouse(True)
     window = windows.Window(world, level_map, caption="jpheng Demo",
-                            resizable=True)
+                            resizable=True,
+                            fullscreen=True)
+    window.set_exclusive_mouse(True)
+    # window = windows.Window(world, level_map, caption="jpheng Demo",
+    #                         resizable=True)
     # enter main program loop
     pyglet.app.run()

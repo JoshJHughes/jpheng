@@ -236,3 +236,53 @@ class ParticleCollisionGenerator(ParticleContactGenerator):
                     contact_list.append(ParticleContact(contact_pair, 
                                         restitution, normal, penetration))
         return contact_list
+
+class BoundaryCollisionGenerator(ParticleContactGenerator):
+    """Detects all boundary wall collisions for the given list of
+    particles and given x,y,z limits.
+    """
+    def __init__(self, particles, xlim, ylim, zlim):
+        self.particles = particles
+        self.xlim = xlim
+        self.ylim = ylim
+        self.zlim = zlim
+
+    def gen_contacts(self):
+        restitution = 1
+        contact_list = []
+        for particle in self.particles:
+            contact_pair = [particle, None]
+            # x direction
+            if particle.physics.p[0] <= self.xlim[0] + particle.graphics.r:
+                normal = np.array([1, 0, 0])
+                penetration = self.xlim[0] + particle.graphics.r - \
+                              particle.physics.p[0]
+                contact_list.append(ParticleContact(contact_pair,
+                    restitution, normal, penetration))
+            elif particle.physics.p[0] >= self.xlim[1] - particle.graphics.r:
+                normal = np.array([-1, 0, 0])
+                penetration = self.xlim[1] - particle.graphics.r - \
+                              particle.physics.p[0]
+                contact_list.append(ParticleContact(contact_pair,
+                    restitution, normal, penetration))
+            # y direction
+            if particle.physics.p[1] <= self.ylim[0] + particle.graphics.r:
+                normal = np.array([0, 1, 0])
+                penetration = self.ylim[0] + particle.graphics.r - \
+                              particle.physics.p[1]
+                contact_list.append(ParticleContact(contact_pair,
+                    restitution, normal, penetration))
+            elif particle.physics.p[1] >= self.ylim[1] - particle.graphics.r:
+                normal = np.array([0, -1, 0])
+                penetration = self.ylim[1] - particle.graphics.r - \
+                              particle.physics.p[1]
+                contact_list.append(ParticleContact(contact_pair,
+                    restitution, normal, penetration))
+            # z direction
+            if particle.physics.p[2] <= self.zlim[0] + particle.graphics.r:
+                normal = np.array([0, 0, 1])
+                penetration = self.zlim[0] + particle.graphics.r - \
+                              particle.physics.p[2]
+                contact_list.append(ParticleContact(contact_pair,
+                    restitution, normal, penetration))
+        return contact_list
