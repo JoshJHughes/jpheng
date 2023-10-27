@@ -4,48 +4,53 @@ import pyglet
 class EmptyMap:
     """Simple empty map to run demos in.  Contains floor and four walls.
     Variables:
-        floor_level: z-coordinate of the floor
-        x_lim: Maximum x-coordinate of the floor
-        y_lim: Maximum y-coordinate of the floor
-        wall_height: Height of the walls
+        xlim: Array containing [min, max] x-coordinate of the floor
+        ylim: Array containing [min, max] y-coordinate of the floor
+        zlim: Array containing [min, max] z co-ordinate of the walls
         boundary: pyglet batch containing the floor and wall vertices
     Methods:
         draw: Draw the map
     """
-    def __init__(self, x_lim=100, y_lim=100, wall_height=50):
+    def __init__(self, xlim=None, ylim=None, zlim=None):
         self.floor_level = 0
-        self.x_lim = x_lim
-        self.y_lim = y_lim
-        self.wall_height = wall_height
+        if xlim is None:
+            self.xlim = [-100, 100]
+        self.x_lim = xlim
+        if ylim is None:
+            self.ylim = [-100, 100]
+        self.y_lim = ylim
+        if zlim is None:
+            self.zlim = [0, 50]
+        self.zlim = zlim
 
         floor_colors = (142, 219, 132)*4
         wall_colors = (50, 62, 66)*4
 
         floor_vertices = [
-            -x_lim, -y_lim, self.floor_level,
-             x_lim, -y_lim, self.floor_level,
-             x_lim,  y_lim, self.floor_level,
-            -x_lim,  y_lim, self.floor_level]
+            xlim[1], ylim[1], zlim[0],
+             xlim[0], ylim[1], zlim[0],
+             xlim[0],  ylim[0], zlim[0],
+            xlim[1],  ylim[0], zlim[0]]
         wall1_vertices = [
-            -x_lim, -y_lim, self.floor_level,
-             x_lim, -y_lim, self.floor_level,
-             x_lim, -y_lim, wall_height,
-            -x_lim, -y_lim, wall_height]
+            xlim[1], ylim[1], zlim[0],
+             xlim[0], ylim[1], zlim[0],
+             xlim[0], ylim[1], zlim[1],
+            xlim[1], ylim[1], zlim[1]]
         wall2_vertices = [
-            x_lim, -y_lim, self.floor_level,
-            x_lim,  y_lim, self.floor_level,
-            x_lim,  y_lim, wall_height,
-            x_lim, -y_lim, wall_height]
+            xlim[0], ylim[1], zlim[0],
+            xlim[0],  ylim[0], zlim[0],
+            xlim[0],  ylim[0], zlim[1],
+            xlim[0], ylim[1], zlim[1]]
         wall3_vertices = [
-             x_lim, y_lim, self.floor_level,
-            -x_lim, y_lim, self.floor_level,
-            -x_lim, y_lim, wall_height,
-             x_lim, y_lim, wall_height]
+             xlim[0], ylim[0], zlim[0],
+            xlim[1], ylim[0], zlim[0],
+            xlim[1], ylim[0], zlim[1],
+             xlim[0], ylim[0], zlim[1]]
         wall4_vertices = [
-            -x_lim,  y_lim, self.floor_level,
-            -x_lim, -y_lim, self.floor_level,
-            -x_lim, -y_lim, wall_height,
-            -x_lim,  y_lim, wall_height]
+            xlim[1],  ylim[0], zlim[0],
+            xlim[1], ylim[1], zlim[0],
+            xlim[1], ylim[1], zlim[1],
+            xlim[1],  ylim[0], zlim[1]]
 
         self.boundary = pyglet.graphics.Batch()
 

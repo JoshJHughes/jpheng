@@ -1,8 +1,9 @@
 import pyglet
-import jpheng.entities as entities
+import jpheng.particles as entities
 import jpheng.window as windows
 import jpheng.maps as maps
 import numpy as np
+from jpheng import pworld
 
 
 # This demo is intended to showcase the 'firework' class which
@@ -13,12 +14,18 @@ import numpy as np
 # spawned by left-clicking on the mouse.
 
 if __name__ == '__main__':
-    # create level map
-    level_map = maps.EmptyMap()
+    xlim = [-100, 100]
+    ylim = [-100, 100]
+    zlim = [0, 50]
 
+    world = pworld.ParticleWorld(xlim, ylim, zlim)
+
+    # create level map
+    level_map = maps.EmptyMap(xlim, ylim, zlim)
     # create window
-    window = windows.Window(level_map, caption="jpheng Demo", resizable=True,
-                           fullscreen=True)
+    window = windows.Window(world, level_map, caption="jpheng Demo",
+                            resizable=True,
+                            fullscreen=True)
     window.set_exclusive_mouse(True)
 
     @window.event
@@ -34,17 +41,17 @@ if __name__ == '__main__':
                           s*np.sin(theta)*np.sin(phi),
                           s*np.cos(theta)])
             fuse = np.random.normal(5, 0.5)
-            window.add_entity(entities.Firework(p, v, fuse, parent=True))
+            world.add_particle(entities.Firework(p, v, fuse, parent=True))
 
     def fireworks_rules(dt):
         """Defines the rules by which the fireworks propagate."""
         # create list of fireworks out of all entities in the current scene
         fireworks = filter(lambda x: isinstance(x, entities.Firework),
-                           window.entity_list)
+                           world.particle_list)
         for firework in fireworks:
             # if fuse has burned out, kill the firework
             if firework.fuse <= 0:
-                window.remove_entity(firework)
+                world.remove_particle(firework)
                 # if the firework is a parent, spawn children
                 if firework.parent:
                     n = 10
@@ -57,7 +64,8 @@ if __name__ == '__main__':
                     v_list[:,2] = v*np.cos(thetas)
                     fuse_list = np.random.normal(1.5, 0.7, n)
                     for i in range(n):
-                        window.add_entity(entities.Firework(firework.physics.p,
+                        world.add_particle(entities.Firework(
+                            firework.physics.p,
                             v_list[i], fuse_list[i],
                             np.random.choice([True, False]),
                             firework.generation + 1))

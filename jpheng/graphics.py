@@ -28,7 +28,7 @@ class GraphicsComponent:
         """Draw mesh."""
         self.vertex_list.draw(self.draw_mode)
 
-    def update(self, entity, dt):
+    def step(self, entity, dt):
         """Update the vertex list to the new entity position."""
         self.vertex_list.vertices = np.add(
             self.mesh, np.tile(entity.physics.p, self.n_verts))
