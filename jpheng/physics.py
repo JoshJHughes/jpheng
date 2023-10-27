@@ -26,28 +26,16 @@ class PhysicsComponent:
         # store values relating to forces
         self.force_accum = np.zeros(3)  # stores net force acting on the
                                         # component
-        self.force_registry = []
 
     def clear_force_accumulator(self):
         """Clear all forces from the accumulator, gravity always acts and is
         not cleared."""
         self.force_accum = self.g/self.inv_mass
 
-    def add_generator(self, generator):
-        """Add additional force generator to the component's registry."""
-        self.force_registry.append(generator)
-
-    def remove_generator(self, generator):
-        """Remove force generator from the component's registry."""
-        self.force_registry.remove(generator)
-
-    def update(self, dt):
+    def step(self, dt):
         """Calculate the new position, velocity and acceleration of the
         particle based on its acceleration.  Uses simple Euler integration
         method."""
-        # update all forces using time step dt
-        for generator in self.force_registry:
-            generator.update_force(self, dt)
         # update position based on last step's velocity and acceleration
         self.p += self.v*dt + 0.5*self.a*dt**2
         # update velocity based on last step's acceleration, reduce previous
